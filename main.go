@@ -15,6 +15,7 @@ func main() {
     paramedicoService := services.NewParamedicoService(database)
     choferService := services.NewChoferService(database)
     reporteService := services.NewReporteService(database)
+    ambulanciaService := services.NewAmbulanciaService(database)
     
     router := gin.Default()
 
@@ -24,6 +25,7 @@ func main() {
     routes.SetupParamedicoRoutes(router, paramedicoService)
     routes.SetupChoferRoutes(router, choferService)
     routes.SetupReporteRoutes(router, reporteService)
+    routes.SetupAmbulanciaRoutes(router, ambulanciaService)
     
     router.Run("localhost:8080")
 }

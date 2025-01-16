@@ -1,10 +1,11 @@
 package controllers
 
 import (
-    "github.com/gin-gonic/gin"
-    "net/http"
-    "github.com/mateopolci/AmbulanciaYa/src/services"
-    "github.com/mateopolci/AmbulanciaYa/src/models"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/mateopolci/AmbulanciaYa/src/models"
+	"github.com/mateopolci/AmbulanciaYa/src/services"
 )
 
 type AccidenteController struct {
