@@ -6,7 +6,7 @@ import (
     "github.com/joho/godotenv"
     "gorm.io/driver/postgres"
     "gorm.io/gorm"
-    "github.com/mateopolci/AmbulanciaYa/src/models"
+/*     "github.com/mateopolci/AmbulanciaYa/src/models" */
 )
 
 func ConnectNeon() *gorm.DB {
@@ -21,11 +21,6 @@ func ConnectNeon() *gorm.DB {
 
     // Conectar a la base de datos usando GORM
     db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
-    if err != nil {
-        panic(err)
-    }
-
-    err = db.AutoMigrate(&models.Accidente{})
     if err != nil {
         panic(err)
     }
