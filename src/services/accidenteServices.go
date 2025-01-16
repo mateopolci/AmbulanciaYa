@@ -15,17 +15,28 @@ func NewAccidenteService(db *gorm.DB) *AccidenteService {
 }
 
 // GetAll obtiene todos los accidentes
-func (s *AccidenteService) GetAll() ([]models.Accidente, error) {
+func (s *AccidenteService) GetAll() ([]models.AccidenteDTO, error) {
     var accidentes []models.Accidente
     result := s.db.Find(&accidentes)
-    return accidentes, result.Error
+    if result.Error != nil {
+        return nil, result.Error
+    }
+
+    accidentesDTO := make([]models.AccidenteDTO, len(accidentes))
+    for i, acc := range accidentes {
+        accidentesDTO[i] = acc.ToDTO()
+    }
+    return accidentesDTO, nil
 }
 
 // GetById obtiene un accidente por su ID
-func (s *AccidenteService) GetById(id string) (models.Accidente, error) {
+func (s *AccidenteService) GetById(id string) (models.AccidenteDTO, error) {
     var accidente models.Accidente
     result := s.db.First(&accidente, "id = ?", id)
-    return accidente, result.Error
+    if result.Error != nil {
+        return models.AccidenteDTO{}, result.Error
+    }
+    return accidente.ToDTO(), nil
 }
 
 // Create crea un nuevo accidente

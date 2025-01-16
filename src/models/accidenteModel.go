@@ -1,5 +1,6 @@
 package models
 
+// Modelo
 type Accidente struct {
     Id string `json:"id" gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
     Direccion string `json:"direccion" gorm:"type:varchar(255);not null"`
@@ -11,6 +12,7 @@ type Accidente struct {
     PacienteId string `json:"pacienteId" gorm:"column:pacienteid;type:uuid;not null"`
 }
 
+// DTO
 type AccidenteDTO struct {
     Direccion string `json:"direccion"`
     Descripcion string `json:"descripcion"`
@@ -19,4 +21,17 @@ type AccidenteDTO struct {
     AmbulanciaId string `json:"ambulanciaId"`
     HospitalId string `json:"hospitalId"`
     PacienteId string `json:"pacienteId"`
+}
+
+// Método para convertir un Accidente en un DTO
+func (a *Accidente) ToDTO() AccidenteDTO {
+    return AccidenteDTO{
+        Direccion:    a.Direccion,
+        Descripcion:  a.Descripcion,
+        Fecha:        a.Fecha,
+        Hora:         a.Hora,
+        AmbulanciaId: a.AmbulanciaId,
+        HospitalId:   a.HospitalId,
+        PacienteId:   a.PacienteId,
+    }
 }

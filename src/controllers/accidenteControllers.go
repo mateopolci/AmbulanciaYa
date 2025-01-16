@@ -16,22 +16,22 @@ func NewAccidenteController(service *services.AccidenteService) *AccidenteContro
 }
 
 func (c *AccidenteController) GetAccidentes(ctx *gin.Context) {
-    accidentes, err := c.service.GetAll()
+    accidentesDTO, err := c.service.GetAll()
     if err != nil {
         ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
     }
-    ctx.JSON(http.StatusOK, accidentes)
+    ctx.JSON(http.StatusOK, accidentesDTO)
 }
 
 func (c *AccidenteController) GetAccidente(ctx *gin.Context) {
     id := ctx.Param("id")
-    accidente, err := c.service.GetById(id)
+    accidenteDTO, err := c.service.GetById(id)
     if err != nil {
         ctx.JSON(http.StatusNotFound, gin.H{"error": "Accidente no encontrado"})
         return
     }
-    ctx.JSON(http.StatusOK, accidente)
+    ctx.JSON(http.StatusOK, accidenteDTO)
 }
 
 func (c *AccidenteController) PostAccidente(ctx *gin.Context) {
