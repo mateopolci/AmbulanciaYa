@@ -8,7 +8,7 @@ type Accidente struct {
     Fecha string `json:"fecha" gorm:"type:varchar(10);not null"`
     Hora string `json:"hora" gorm:"type:varchar(8);not null"`
     AmbulanciaId string `json:"ambulanciaId" gorm:"column:ambulanciaid;type:uuid;not null"`
-    HospitalId string `json:"hospitalId" gorm:"column:hospitalid;type:uuid"`
+    HospitalId *string `json:"hospitalId,omitempty" gorm:"column:hospitalid;type:uuid;null"`
     PacienteId string `json:"pacienteId" gorm:"column:pacienteid;type:uuid;not null"`
 }
 
@@ -19,12 +19,12 @@ type AccidenteDTO struct {
     Fecha string `json:"fecha"`
     Hora string `json:"hora"`
     AmbulanciaId string `json:"ambulanciaId"`
-    HospitalId string `json:"hospitalId"`
+    HospitalId *string `json:"hospitalId,omitempty"`
     PacienteId string `json:"pacienteId"`
 }
 
 // Método para convertir un Accidente en un DTO
-func (a *Accidente) ToDTO() AccidenteDTO {
+func (a *Accidente) AccidenteToDTO() AccidenteDTO {
     return AccidenteDTO{
         Direccion:    a.Direccion,
         Descripcion:  a.Descripcion,

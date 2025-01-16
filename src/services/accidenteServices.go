@@ -24,7 +24,7 @@ func (s *AccidenteService) GetAll() ([]models.AccidenteDTO, error) {
 
     accidentesDTO := make([]models.AccidenteDTO, len(accidentes))
     for i, acc := range accidentes {
-        accidentesDTO[i] = acc.ToDTO()
+        accidentesDTO[i] = acc.AccidenteToDTO()
     }
     return accidentesDTO, nil
 }
@@ -36,7 +36,7 @@ func (s *AccidenteService) GetById(id string) (models.AccidenteDTO, error) {
     if result.Error != nil {
         return models.AccidenteDTO{}, result.Error
     }
-    return accidente.ToDTO(), nil
+    return accidente.AccidenteToDTO(), nil
 }
 
 // Create crea un nuevo accidente
