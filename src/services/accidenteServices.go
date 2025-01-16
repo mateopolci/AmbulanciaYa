@@ -14,8 +14,8 @@ func NewAccidenteService(db *gorm.DB) *AccidenteService {
     return &AccidenteService{db: db}
 }
 
-// GetAll obtiene todos los accidentes
-func (s *AccidenteService) GetAll() ([]models.AccidenteDTO, error) {
+// Obtener todos los accidentes
+func (s *AccidenteService) GetAllAccidentes() ([]models.AccidenteDTO, error) {
     var accidentes []models.Accidente
     result := s.db.Find(&accidentes)
     if result.Error != nil {
@@ -29,8 +29,8 @@ func (s *AccidenteService) GetAll() ([]models.AccidenteDTO, error) {
     return accidentesDTO, nil
 }
 
-// GetById obtiene un accidente por su ID
-func (s *AccidenteService) GetById(id string) (models.AccidenteDTO, error) {
+// Obtener un accidente por su ID
+func (s *AccidenteService) GetAccidenteById(id string) (models.AccidenteDTO, error) {
     var accidente models.Accidente
     result := s.db.First(&accidente, "id = ?", id)
     if result.Error != nil {
@@ -39,8 +39,8 @@ func (s *AccidenteService) GetById(id string) (models.AccidenteDTO, error) {
     return accidente.AccidenteToDTO(), nil
 }
 
-// Create crea un nuevo accidente
-func (s *AccidenteService) Create(accidenteDTO models.AccidenteDTO) (models.Accidente, error) {
+// Crear un nuevo accidente
+func (s *AccidenteService) CreateAccidente(accidenteDTO models.AccidenteDTO) (models.Accidente, error) {
     accidente := models.Accidente{
         Direccion: accidenteDTO.Direccion,
         Descripcion: accidenteDTO.Descripcion,
@@ -55,8 +55,8 @@ func (s *AccidenteService) Create(accidenteDTO models.AccidenteDTO) (models.Acci
     return accidente, result.Error
 }
 
-// Update actualiza un accidente existente
-func (s *AccidenteService) Update(id string, accidenteDTO models.AccidenteDTO) (models.Accidente, error) {
+// Actualizar un accidente existente
+func (s *AccidenteService) UpdateAccidente(id string, accidenteDTO models.AccidenteDTO) (models.Accidente, error) {
     var accidente models.Accidente
     if err := s.db.First(&accidente, "id = ?", id).Error; err != nil {
         return accidente, err
@@ -74,8 +74,8 @@ func (s *AccidenteService) Update(id string, accidenteDTO models.AccidenteDTO) (
     return accidente, result.Error
 }
 
-// Delete elimina un accidente por su ID
-func (s *AccidenteService) Delete(id string) error {
+// Eliminar un accidente por su ID
+func (s *AccidenteService) DeleteAccidente(id string) error {
     result := s.db.Delete(&models.Accidente{}, "id = ?", id)
     return result.Error
 }

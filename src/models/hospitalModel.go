@@ -1,1 +1,26 @@
 package models
+
+// Modelo
+type Hospital struct {
+	Id        string `json:"id" gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
+	Nombre    string `json:"nombre" gorm:"type:varchar(255);not null"`
+	Direccion string `json:"direccion" gorm:"type:varchar(255);not null"`
+}
+
+// DTO
+type HospitalDTO struct {
+	Nombre    string `json:"nombre"`
+	Direccion string `json:"direccion"`
+} 
+
+// Metodo DTO de hospital
+func (h *Hospital) HospitalToDTO() HospitalDTO {
+	return HospitalDTO{
+		Nombre:    h.Nombre,
+		Direccion: h.Direccion,
+	}
+}
+
+func (Hospital) TableName() string {
+    return "hospitales"
+}

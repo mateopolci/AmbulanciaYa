@@ -16,7 +16,7 @@ func NewAccidenteController(service *services.AccidenteService) *AccidenteContro
 }
 
 func (c *AccidenteController) GetAccidentes(ctx *gin.Context) {
-    accidentesDTO, err := c.service.GetAll()
+    accidentesDTO, err := c.service.GetAllAccidentes()
     if err != nil {
         ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
@@ -26,7 +26,7 @@ func (c *AccidenteController) GetAccidentes(ctx *gin.Context) {
 
 func (c *AccidenteController) GetAccidente(ctx *gin.Context) {
     id := ctx.Param("id")
-    accidenteDTO, err := c.service.GetById(id)
+    accidenteDTO, err := c.service.GetAccidenteById(id)
     if err != nil {
         ctx.JSON(http.StatusNotFound, gin.H{"error": "Accidente no encontrado"})
         return
@@ -41,7 +41,7 @@ func (c *AccidenteController) PostAccidente(ctx *gin.Context) {
         return
     }
 
-    accidente, err := c.service.Create(accidenteDTO)
+    accidente, err := c.service.CreateAccidente(accidenteDTO)
     if err != nil {
         ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
@@ -57,7 +57,7 @@ func (c *AccidenteController) PutAccidente(ctx *gin.Context) {
         return
     }
 
-    accidente, err := c.service.Update(id, accidenteDTO)
+    accidente, err := c.service.UpdateAccidente(id, accidenteDTO)
     if err != nil {
         ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
@@ -67,7 +67,7 @@ func (c *AccidenteController) PutAccidente(ctx *gin.Context) {
 
 func (c *AccidenteController) DeleteAccidente(ctx *gin.Context) {
     id := ctx.Param("id")
-    if err := c.service.Delete(id); err != nil {
+    if err := c.service.DeleteAccidente(id); err != nil {
         ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
     }

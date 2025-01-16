@@ -10,9 +10,11 @@ import (
 func main() {
     database := db.ConnectNeon()
     accidenteService := services.NewAccidenteService(database)
+    hospitalService := services.NewHospitalService(database)
     
     router := gin.Default()
     routes.SetupAccidenteRoutes(router, accidenteService)
+    routes.SetupHospitalRoutes(router, hospitalService)
     
     router.Run("localhost:8080")
 }
