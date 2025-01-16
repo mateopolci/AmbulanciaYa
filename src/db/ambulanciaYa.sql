@@ -35,8 +35,8 @@ CREATE TABLE ambulancias (
 -- Create table hospitales
 CREATE TABLE hospitales (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    nombre VARCHAR(255),
-    direccion VARCHAR(255)
+    nombre VARCHAR(255) NOT NULL,
+    direccion VARCHAR(255) NOT NULL
 );
 
 -- Create table pacientes
@@ -64,11 +64,11 @@ CREATE TABLE accidentes (
 -- Create table reportes
 CREATE TABLE reportes (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    descripcion TEXT,
-    fecha VARCHAR(10),
-    hora VARCHAR(8),
-    requiereTraslado BOOLEAN,
-    accidenteId UUID,
+    descripcion TEXT NOT NULL,
+    fecha VARCHAR(10) NOT NULL,
+    hora VARCHAR(8) NOT NULL,
+    requiereTraslado BOOLEAN NOT NULL,
+    accidenteId UUID NOT NULL,
     FOREIGN KEY (accidenteId) REFERENCES accidentes(id)
 );
 
