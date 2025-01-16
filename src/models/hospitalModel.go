@@ -21,6 +21,7 @@ func (h *Hospital) HospitalToDTO() HospitalDTO {
 	}
 }
 
+//Especificacion del nombre de la bdd
 func (Hospital) TableName() string {
     return "hospitales"
 }
