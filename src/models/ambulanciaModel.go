@@ -9,6 +9,7 @@ type Ambulancia struct {
 	Seguro       bool   `json:"seguro" gorm:"type:boolean;not null"`
 	ChoferId     string `json:"choferId" gorm:"column:choferid;type:uuid;not null"`
 	ParamedicoId string `json:"paramedicoId" gorm:"column:paramedicoid;type:uuid;not null"`
+	Base         bool   `json:"base" gorm:"type:boolean;not null"`
 }
 
 // DTO
@@ -19,6 +20,7 @@ type AmbulanciaDTO struct {
 	Seguro       bool   `json:"seguro"`
 	ChoferId     string `json:"choferId"`
 	ParamedicoId string `json:"paramedicoId"`
+	Base         bool   `json:"base" gorm:"type:boolean;not null"`
 }
 
 // Método DTO de ambulancia
@@ -30,10 +32,11 @@ func (a *Ambulancia) AmbulanciaToDTO() AmbulanciaDTO {
 		Seguro:       a.Seguro,
 		ChoferId:     a.ChoferId,
 		ParamedicoId: a.ParamedicoId,
+		Base:         a.Base,
 	}
 }
 
 //Especificacion del nombre de la bdd
 func (Ambulancia) TableName() string {
-    return "ambulancias"
+	return "ambulancias"
 }

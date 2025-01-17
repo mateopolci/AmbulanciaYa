@@ -48,6 +48,7 @@ func (s *AmbulanciaService) CreateAmbulancia(ambulanciaDTO models.AmbulanciaDTO)
 		Seguro:       ambulanciaDTO.Seguro,
 		ChoferId:     ambulanciaDTO.ChoferId,
 		ParamedicoId: ambulanciaDTO.ParamedicoId,
+		Base:          ambulanciaDTO.Base,
 	}
 
 	result := s.db.Create(&ambulancia)
@@ -67,6 +68,7 @@ func (s *AmbulanciaService) UpdateAmbulancia(id string, ambulanciaDTO models.Amb
 	ambulancia.Seguro = ambulanciaDTO.Seguro
 	ambulancia.ChoferId = ambulanciaDTO.ChoferId
 	ambulancia.ParamedicoId = ambulanciaDTO.ParamedicoId
+	ambulancia.Base = ambulanciaDTO.Base
 
 	result := s.db.Save(&ambulancia)
 	return ambulancia, result.Error
