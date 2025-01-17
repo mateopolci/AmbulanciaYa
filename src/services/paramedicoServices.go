@@ -44,6 +44,7 @@ func (s *ParamedicoService) Create(paramedicoDTO models.ParamedicoDTO) (models.P
 	paramedico := models.Paramedico{
 		NombreCompleto: paramedicoDTO.NombreCompleto,
 		Dni:            paramedicoDTO.Dni,
+		Email:          paramedicoDTO.Email,
 	}
 
 	result := s.db.Create(&paramedico)
