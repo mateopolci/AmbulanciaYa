@@ -24,7 +24,7 @@ func (s *PacienteService) GetAll() ([]models.PacienteDTO, error) {
 
 	pacientesDTO := make([]models.PacienteDTO, len(pacientes))
 	for i, pac := range pacientes {
-		pacientesDTO[i] = pac.ToDTO()
+		pacientesDTO[i] = pac.PacienteToDTO()
 	}
 	return pacientesDTO, nil
 }
@@ -36,7 +36,7 @@ func (s *PacienteService) GetById(id string) (models.PacienteDTO, error) {
 	if result.Error != nil {
 		return models.PacienteDTO{}, result.Error
 	}
-	return paciente.ToDTO(), nil
+	return paciente.PacienteToDTO(), nil
 }
 
 // Create crea un nuevo paciente

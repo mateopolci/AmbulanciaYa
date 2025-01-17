@@ -14,13 +14,12 @@ type ChoferDTO struct {
 }
 
 // Método para convertir un Chofer en un DTO
-func (c *Chofer) ToDTO() ChoferDTO {
+func (c *Chofer) ChoferToDTO() ChoferDTO {
 	return ChoferDTO{
 		NombreCompleto: c.NombreCompleto,
 		Dni:            c.Dni,
 	}
 }
-
 
 //Especificacion del nombre de la bdd
 func (Chofer) TableName() string {

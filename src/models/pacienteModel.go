@@ -14,7 +14,7 @@ type PacienteDTO struct {
 }
 
 // Método para convertir un Accidente en un DTO
-func (p *Paciente) ToDTO() PacienteDTO {
+func (p *Paciente) PacienteToDTO() PacienteDTO {
 	return PacienteDTO{
 		NombreCompleto: p.NombreCompleto,
 		Telefono:       p.Telefono,

@@ -24,7 +24,7 @@ func (s *ChoferService) GetAll() ([]models.ChoferDTO, error) {
 
 	choferesDTO := make([]models.ChoferDTO, len(choferes))
 	for i, chof := range choferes {
-		choferesDTO[i] = chof.ToDTO()
+		choferesDTO[i] = chof.ChoferToDTO()
 	}
 	return choferesDTO, nil
 }
@@ -36,7 +36,7 @@ func (s *ChoferService) GetById(id string) (models.ChoferDTO, error) {
 	if result.Error != nil {
 		return models.ChoferDTO{}, result.Error
 	}
-	return chofer.ToDTO(), nil
+	return chofer.ChoferToDTO(), nil
 }
 
 // Create crea un nuevo chofer

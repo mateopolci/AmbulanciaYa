@@ -19,7 +19,7 @@ type ParamedicoDTO struct {
 }
 
 // Método para convertir un Paramedico en un DTO
-func (p *Paramedico) ToDTO() ParamedicoDTO {
+func (p *Paramedico) ParamedicoToDTO() ParamedicoDTO {
 	return ParamedicoDTO{
 		NombreCompleto: p.NombreCompleto,
 		Dni:            p.Dni,

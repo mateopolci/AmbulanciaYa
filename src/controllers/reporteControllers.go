@@ -46,7 +46,7 @@ func (c *ReporteController) PostReporte(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusCreated, reporte)
+	ctx.JSON(http.StatusCreated, reporte.ReporteToDTO())
 }
 
 func (c *ReporteController) PutReporte(ctx *gin.Context) {
@@ -62,7 +62,7 @@ func (c *ReporteController) PutReporte(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, reporte)
+	ctx.JSON(http.StatusOK, reporte.ReporteToDTO())
 }
 
 func (c *ReporteController) DeleteReporte(ctx *gin.Context) {

@@ -24,7 +24,7 @@ func (s *ParamedicoService) GetAll() ([]models.ParamedicoDTO, error) {
 
 	paramedicosDTO := make([]models.ParamedicoDTO, len(paramedicos))
 	for i, param := range paramedicos {
-		paramedicosDTO[i] = param.ToDTO()
+		paramedicosDTO[i] = param.ParamedicoToDTO()
 	}
 	return paramedicosDTO, nil
 }
@@ -36,7 +36,7 @@ func (s *ParamedicoService) GetById(id string) (models.ParamedicoDTO, error) {
 	if result.Error != nil {
 		return models.ParamedicoDTO{}, result.Error
 	}
-	return paramedico.ToDTO(), nil
+	return paramedico.ParamedicoToDTO(), nil
 }
 
 // Create crea un nuevo paramedico

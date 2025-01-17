@@ -47,7 +47,7 @@ func (c *ChoferController) PostChofer(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusCreated, chofer)
+	ctx.JSON(http.StatusCreated, chofer.ChoferToDTO())
 }
 
 func (c *ChoferController) PutChofer(ctx *gin.Context) {
@@ -63,7 +63,7 @@ func (c *ChoferController) PutChofer(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, chofer)
+	ctx.JSON(http.StatusOK, chofer.ChoferToDTO())
 }
 
 func (c *ChoferController) DeleteChofer(ctx *gin.Context) {

@@ -47,7 +47,7 @@ func (c *AccidenteController) PostAccidente(ctx *gin.Context) {
         ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
     }
-    ctx.JSON(http.StatusCreated, accidente)
+    ctx.JSON(http.StatusCreated, accidente.AccidenteToDTO())
 }
 
 func (c *AccidenteController) PutAccidente(ctx *gin.Context) {
@@ -63,7 +63,7 @@ func (c *AccidenteController) PutAccidente(ctx *gin.Context) {
         ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
     }
-    ctx.JSON(http.StatusOK, accidente)
+    ctx.JSON(http.StatusOK, accidente.AccidenteToDTO())
 }
 
 func (c *AccidenteController) DeleteAccidente(ctx *gin.Context) {

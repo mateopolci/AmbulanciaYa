@@ -47,7 +47,7 @@ func (c *PacienteController) PostPaciente(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusCreated, paciente)
+	ctx.JSON(http.StatusCreated, paciente.PacienteToDTO())
 }
 
 func (c *PacienteController) PutPaciente(ctx *gin.Context) {
@@ -63,7 +63,7 @@ func (c *PacienteController) PutPaciente(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, paciente)
+	ctx.JSON(http.StatusOK, paciente.PacienteToDTO())
 }
 
 func (c *PacienteController) DeletePaciente(ctx *gin.Context) {

@@ -47,7 +47,7 @@ func (c *ParamedicoController) PostParamedico(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusCreated, paramedico)
+	ctx.JSON(http.StatusCreated, paramedico.ParamedicoToDTO())
 }
 
 func (c *ParamedicoController) PutParamedico(ctx *gin.Context) {
@@ -63,7 +63,7 @@ func (c *ParamedicoController) PutParamedico(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, paramedico)
+	ctx.JSON(http.StatusOK, paramedico.ParamedicoToDTO())
 }
 
 func (c *ParamedicoController) DeleteParamedico(ctx *gin.Context) {

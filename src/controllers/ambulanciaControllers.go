@@ -47,7 +47,7 @@ func (c *AmbulanciaController) PostAmbulancia(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusCreated, ambulancia)
+	ctx.JSON(http.StatusCreated, ambulancia.AmbulanciaToDTO())
 }
 
 func (c *AmbulanciaController) PutAmbulancia(ctx *gin.Context) {
@@ -63,7 +63,7 @@ func (c *AmbulanciaController) PutAmbulancia(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, ambulancia)
+	ctx.JSON(http.StatusOK, ambulancia.AmbulanciaToDTO())
 }
 
 func (c *AmbulanciaController) DeleteAmbulancia(ctx *gin.Context) {
