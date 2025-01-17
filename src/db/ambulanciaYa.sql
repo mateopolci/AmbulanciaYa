@@ -89,21 +89,15 @@ ALTER TABLE reportes
 ADD CONSTRAINT unique_accidente_reporte
 UNIQUE (accidenteId);
 
--- Constraint para Ambulancia-Accidente (1:0..*)
--- La ambulancia puede tener 0 o más accidentes, no requiere constraint adicional
--- ya está implementado con la foreign key y el NOT NULL en accidentes.ambulanciaID
+-- Añadir constraint de unicidad para chofer-ambulancia (1:1)
+ALTER TABLE ambulancias
+ADD CONSTRAINT unique_chofer_ambulancia 
+UNIQUE (choferID);
 
--- Constraint para Hospital-Accidente (0..1:0..*)
--- El hospital puede tener 0 o más accidentes y un accidente puede no tener hospital
--- ya está implementado con la foreign key nullable en accidentes.hospitalID
-
--- Constraint para Chofer-Ambulancia (1:0..*)
--- La ambulancia debe tener exactamente un chofer, ya implementado con NOT NULL en ambulancias.choferID
--- Un chofer puede tener 0 o más ambulancias, no requiere constraint adicional
-
--- Constraint para Paramedico-Ambulancia (1:0..*)
--- La ambulancia debe tener exactamente un paramédico, ya implementado con NOT NULL en ambulancias.paramedicoID
--- Un paramédico puede tener 0 o más ambulancias, no requiere constraint adicional
+-- Añadir constraint de unicidad para paramedico-ambulancia (1:1)
+ALTER TABLE ambulancias
+ADD CONSTRAINT unique_paramedico_ambulancia 
+UNIQUE (paramedicoID);
 
 ---------------------------------------------------------------------------------------------------------------------------------
 
