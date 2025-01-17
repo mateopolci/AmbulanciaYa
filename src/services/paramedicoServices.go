@@ -45,6 +45,8 @@ func (s *ParamedicoService) Create(paramedicoDTO models.ParamedicoDTO) (models.P
 		NombreCompleto: paramedicoDTO.NombreCompleto,
 		Dni:            paramedicoDTO.Dni,
 		Email:          paramedicoDTO.Email,
+		IsAdmin:        paramedicoDTO.IsAdmin,
+
 	}
 
 	result := s.db.Create(&paramedico)
@@ -60,6 +62,8 @@ func (s *ParamedicoService) Update(id string, paramedicoDTO models.ParamedicoDTO
 
 	paramedico.NombreCompleto = paramedicoDTO.NombreCompleto
 	paramedico.Dni = paramedicoDTO.Dni
+	paramedico.Email = paramedicoDTO.Email
+	paramedico.IsAdmin = paramedicoDTO.IsAdmin
 
 	result := s.db.Save(&paramedico)
 	return paramedico, result.Error

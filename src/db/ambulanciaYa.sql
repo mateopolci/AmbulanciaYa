@@ -18,7 +18,8 @@ CREATE TABLE paramedicos (
     nombreCompleto VARCHAR(255) NOT NULL,
     dni VARCHAR(20) NOT NULL,
     email VARCHAR(50) NOT NULL,
-    password VARCHAR(20) NOT NULL
+    password VARCHAR(20) NOT NULL,
+    isAdmin BOOLEAN NOT NULL
 );
 
 -- Create table ambulancias
