@@ -1,6 +1,7 @@
 package db
 
 import (
+    "fmt"
     "log"
     "os"
     "github.com/joho/godotenv"
@@ -9,9 +10,8 @@ import (
 )
 
 func ConnectNeon() *gorm.DB {
-    // Cargar variables de entorno
+    // Intentar cargar .env en desarrollo
     _ = godotenv.Load()
-
 
     // Obtener la URL de conexión
     connStr := os.Getenv("DATABASE_URL")
@@ -19,12 +19,18 @@ func ConnectNeon() *gorm.DB {
         log.Fatal("DATABASE_URL no está configurada")
     }
 
-    // Conectar a la base de datos usando GORM
-    db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
+    // Configuración para desarrollo y producción
+    config := postgres.Config{
+        DSN: connStr,
+        PreferSimpleProtocol: true,
+    }
+
+    // Conectar a la base de datos con GORM
+    db, err := gorm.Open(postgres.New(config), &gorm.Config{})
     if err != nil {
         log.Fatal("Error conectando a la base de datos: ", err)
     }
-    
+
+    fmt.Println("Conexión a la base de datos establecida")
     return db
 }
-
