@@ -6,7 +6,7 @@ type Paramedico struct {
 	NombreCompleto string `json:"nombreCompleto" gorm:"column:nombrecompleto;type:varchar(255);not null"`
 	Dni            string `json:"dni" gorm:"type:varchar(20);not null"`
 	Email          string `json:"email" gorm:"type:varchar(50);not null"`
-	Password       string `json:"password" gorm:"type:varchar(20);not null"`
+	Password       string `json:"-" gorm:"type:varchar(20);not null"`
 	IsAdmin        bool   `json:"isAdmin" gorm:"column:isadmin;type:boolean;not null"`
 }
 
@@ -26,4 +26,10 @@ func (p *Paramedico) ParamedicoToDTO() ParamedicoDTO {
 		Email:          p.Email,
 		IsAdmin:        p.IsAdmin,
 	}
+}
+
+// DTO para el login
+type LoginRequest struct {
+    Email    string `json:"email" binding:"required,email"`
+    Password string `json:"password" binding:"required,min=6,max=20"`
 }
