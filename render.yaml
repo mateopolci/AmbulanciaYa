@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: ambulanciaya-api
+    env: go
+    region: oregon
+    buildCommand: go build -o app
+    startCommand: ./app
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: GIN_MODE
+        value: release
+    buildFilter:
+      paths:
+        - ./**/*.go
+        - go.mod
+        - go.sum
