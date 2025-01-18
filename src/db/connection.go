@@ -6,23 +6,23 @@ import (
     "github.com/joho/godotenv"
     "gorm.io/driver/postgres"
     "gorm.io/gorm"
-/*     "github.com/mateopolci/AmbulanciaYa/src/models" */
 )
 
 func ConnectNeon() *gorm.DB {
     // Cargar variables de entorno
-    err := godotenv.Load()
-    if err != nil {
-        log.Fatal("Error loading .env file")
-    }
+    _ = godotenv.Load()
+
 
     // Obtener la URL de conexión
     connStr := os.Getenv("DATABASE_URL")
+    if connStr == "" {
+        log.Fatal("DATABASE_URL no está configurada")
+    }
 
     // Conectar a la base de datos usando GORM
     db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
     if err != nil {
-        panic(err)
+        log.Fatal("Error conectando a la base de datos: ", err)
     }
     
     return db
