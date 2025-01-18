@@ -38,6 +38,7 @@ func main() {
 	ambulanciaService := services.NewAmbulanciaService(database)
 
 	router := gin.Default()
+	router.Use(middleware.SetupCORS())
 
 	routes.SetupAccidenteRoutes(router, accidenteService)
 	routes.SetupHospitalRoutes(router, hospitalService)
