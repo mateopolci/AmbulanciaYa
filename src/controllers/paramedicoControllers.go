@@ -74,3 +74,22 @@ func (c *ParamedicoController) DeleteParamedico(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, gin.H{"message": "Paramedico eliminado"})
 }
+
+func (c *ParamedicoController) Login(ctx *gin.Context) {
+    var loginReq models.LoginRequest
+    
+    if err := ctx.ShouldBindJSON(&loginReq); err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+	token, err := c.service.Login(loginReq.Email, loginReq.Password)
+    if err != nil {
+        ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Credenciales inválidas"})
+        return
+    }
+
+    ctx.JSON(http.StatusOK, gin.H{
+        "token": token,
+    })
+}

@@ -14,7 +14,10 @@ func SetSecretKey (key string) {
 	secretKey = key
 }
 
-// Middleware para validar tokens JWT
+func GetSecretKey() string {
+    return secretKey
+}
+
 func AuthMiddleware() gin.HandlerFunc {
 	return func (ctx *gin.Context) {
 		// Obtiene el encabezado de autorización

@@ -6,7 +6,7 @@ type Paramedico struct {
 	NombreCompleto string `json:"nombreCompleto" gorm:"column:nombrecompleto;type:varchar(255);not null"`
 	Dni            string `json:"dni" gorm:"type:varchar(20);not null"`
 	Email          string `json:"email" gorm:"type:varchar(50);not null"`
-	Password       string `json:"-" gorm:"type:varchar(20);not null"`
+	Password       string `json:"password" gorm:"type:varchar(20);not null"`
 	IsAdmin        bool   `json:"isAdmin" gorm:"column:isadmin;type:boolean;not null"`
 }
 
@@ -15,6 +15,7 @@ type ParamedicoDTO struct {
 	NombreCompleto string `json:"nombreCompleto"`
 	Dni            string `json:"dni"`
 	Email          string `json:"email"`
+	Password       string `json:"password,omitempty"`
 	IsAdmin        bool   `json:"isAdmin"`
 }
 
