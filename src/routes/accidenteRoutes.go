@@ -12,6 +12,7 @@ func SetupAccidenteRoutes(router *gin.Engine, service *services.AccidenteService
     accidente := router.Group("/accidentes")
     {
         accidente.GET("", accidenteController.GetAccidentes)
+        accidente.GET("/desc", accidenteController.GetAccidentesDesc)
         accidente.GET("/:id", accidenteController.GetAccidente)
         accidente.POST("", accidenteController.PostAccidente)
         accidente.PUT("/:id", accidenteController.PutAccidente)

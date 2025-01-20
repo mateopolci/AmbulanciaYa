@@ -29,6 +29,42 @@ func (s *AccidenteService) GetAllAccidentes() ([]models.AccidenteDTO, error) {
     return accidentesDTO, nil
 }
 
+// Obtener todos los accidentes con descripcion
+func (s *AccidenteService) GetAllAccidentesDesc() ([]models.AccidenteDescDTO, error) {
+    var results []struct {
+        models.Accidente
+        AmbulanciaPatente string  `gorm:"column:ambulancia_patente"`
+        HospitalNombre    *string `gorm:"column:hospital_nombre"`
+        PacienteNombre    string  `gorm:"column:paciente_nombre"`
+    }
+
+    err := s.db.Table("accidentes").
+        Select("accidentes.*, ambulancias.patente as ambulancia_patente, hospitales.nombre as hospital_nombre, pacientes.nombrecompleto as paciente_nombre").
+        Joins("LEFT JOIN ambulancias ON accidentes.ambulanciaid = ambulancias.id").
+        Joins("LEFT JOIN hospitales ON accidentes.hospitalid = hospitales.id").
+        Joins("LEFT JOIN pacientes ON accidentes.pacienteid = pacientes.id").
+        Find(&results).Error
+
+    if err != nil {
+        return nil, err
+    }
+
+    accidentesDTO := make([]models.AccidenteDescDTO, len(results))
+    for i, res := range results {
+        accidentesDTO[i] = models.AccidenteDescDTO{
+            Id:          res.Id,
+            Direccion:   res.Direccion,
+            Descripcion: res.Descripcion,
+            Fecha:       res.Fecha,
+            Hora:        res.Hora,
+            Ambulancia:  res.AmbulanciaPatente,
+            Hospital:    res.HospitalNombre,
+            Paciente:    res.PacienteNombre,
+        }
+    }
+    return accidentesDTO, nil
+}
+
 // Obtener un accidente por su ID
 func (s *AccidenteService) GetAccidenteById(id string) (models.AccidenteDTO, error) {
     var accidente models.Accidente

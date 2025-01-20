@@ -25,6 +25,15 @@ func (c *AccidenteController) GetAccidentes(ctx *gin.Context) {
     ctx.JSON(http.StatusOK, accidentesDTO)
 }
 
+func (c *AccidenteController) GetAccidentesDesc(ctx *gin.Context) {
+    accidentesDTO, err := c.service.GetAllAccidentesDesc()
+    if err != nil {
+        ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+    ctx.JSON(http.StatusOK, accidentesDTO)
+}
+
 func (c *AccidenteController) GetAccidente(ctx *gin.Context) {
     id := ctx.Param("id")
     accidenteDTO, err := c.service.GetAccidenteById(id)

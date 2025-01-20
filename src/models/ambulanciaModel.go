@@ -43,7 +43,7 @@ func (Ambulancia) TableName() string {
 	return "ambulancias"
 }
 
-// DTO para service de descripcion de ambulancia
+// DTO para service de descripcion de Ambulancias
 type AmbulanciaDescDTO struct {
 	Id         string `json:"id"`
 	Patente    string `json:"patente"`

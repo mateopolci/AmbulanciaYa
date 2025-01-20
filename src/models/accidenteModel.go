@@ -37,3 +37,15 @@ func (a *Accidente) AccidenteToDTO() AccidenteDTO {
 		PacienteId:   a.PacienteId,
 	}
 }
+
+// DTO para service de descripcion de Accidentes
+type AccidenteDescDTO struct {
+    Id          string  `json:"id"`
+    Direccion   string  `json:"direccion"`
+    Descripcion string  `json:"descripcion"`
+    Fecha       string  `json:"fecha"`
+    Hora        string  `json:"hora"` 
+    Ambulancia  string  `json:"ambulancia"`
+    Hospital    *string `json:"hospital,omitempty"`
+    Paciente    string  `json:"paciente"`
+}
