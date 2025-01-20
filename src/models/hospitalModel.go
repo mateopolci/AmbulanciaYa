@@ -9,13 +9,15 @@ type Hospital struct {
 
 // DTO
 type HospitalDTO struct {
+	Id        string `json:"id"`
 	Nombre    string `json:"nombre"`
 	Direccion string `json:"direccion"`
-} 
+}
 
 // Metodo DTO de hospital
 func (h *Hospital) HospitalToDTO() HospitalDTO {
 	return HospitalDTO{
+		Id:        h.Id,
 		Nombre:    h.Nombre,
 		Direccion: h.Direccion,
 	}
@@ -23,5 +25,5 @@ func (h *Hospital) HospitalToDTO() HospitalDTO {
 
 //Especificacion del nombre de la bdd
 func (Hospital) TableName() string {
-    return "hospitales"
+	return "hospitales"
 }

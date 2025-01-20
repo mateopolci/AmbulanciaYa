@@ -29,6 +29,40 @@ func (s *AmbulanciaService) GetAllAmbulancias() ([]models.AmbulanciaDTO, error) 
 	return ambulanciasDTO, nil
 }
 
+// Obtener todas las ambulancias con descripcion
+func (s *AmbulanciaService) GetAllAmbulanciasDesc() ([]models.AmbulanciaDescDTO, error) {
+    var results []struct {
+        models.Ambulancia
+        ChoferNombre     string `gorm:"column:chofer_nombre"`
+        ParamedicoNombre string `gorm:"column:paramedico_nombre"`
+    }
+
+    err := s.db.Table("ambulancias").
+        Select("ambulancias.*, choferes.nombrecompleto as chofer_nombre, paramedicos.nombrecompleto as paramedico_nombre").
+        Joins("LEFT JOIN choferes ON ambulancias.choferid = choferes.id").
+        Joins("LEFT JOIN paramedicos ON ambulancias.paramedicoid = paramedicos.id").
+        Find(&results).Error
+
+    if err != nil {
+        return nil, err
+    }
+
+    ambulanciasDTO := make([]models.AmbulanciaDescDTO, len(results))
+    for i, res := range results {
+        ambulanciasDTO[i] = models.AmbulanciaDescDTO{
+            Id:    res.Id,
+            Patente:    res.Patente,
+            Inventario: res.Inventario,
+            Vtv:        res.Vtv,
+            Seguro:     res.Seguro,
+            Chofer:     res.ChoferNombre,
+            Paramedico: res.ParamedicoNombre,
+            Base:       res.Base,
+        }
+    }
+    return ambulanciasDTO, nil
+}
+
 // Obtener una ambulancia por su ID
 func (s *AmbulanciaService) GetAmbulanciaById(id string) (models.AmbulanciaDTO, error) {
 	var ambulancia models.Ambulancia

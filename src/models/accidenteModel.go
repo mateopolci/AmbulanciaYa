@@ -14,6 +14,7 @@ type Accidente struct {
 
 // DTO
 type AccidenteDTO struct {
+	Id           string  `json:"id"`
 	Direccion    string  `json:"direccion"`
 	Descripcion  string  `json:"descripcion"`
 	Fecha        string  `json:"fecha"`
@@ -26,6 +27,7 @@ type AccidenteDTO struct {
 // Método DTO de accidente
 func (a *Accidente) AccidenteToDTO() AccidenteDTO {
 	return AccidenteDTO{
+		Id:           a.Id,
 		Direccion:    a.Direccion,
 		Descripcion:  a.Descripcion,
 		Fecha:        a.Fecha,

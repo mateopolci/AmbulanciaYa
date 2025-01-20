@@ -9,6 +9,7 @@ type Chofer struct {
 
 // DTO
 type ChoferDTO struct {
+	Id             string `json:"id"`
 	NombreCompleto string `json:"nombreCompleto"`
 	Dni            string `json:"dni"`
 }
@@ -16,6 +17,7 @@ type ChoferDTO struct {
 // Método para convertir un Chofer en un DTO
 func (c *Chofer) ChoferToDTO() ChoferDTO {
 	return ChoferDTO{
+		Id:             c.Id,
 		NombreCompleto: c.NombreCompleto,
 		Dni:            c.Dni,
 	}
@@ -23,5 +25,5 @@ func (c *Chofer) ChoferToDTO() ChoferDTO {
 
 //Especificacion del nombre de la bdd
 func (Chofer) TableName() string {
-    return "choferes"
+	return "choferes"
 }

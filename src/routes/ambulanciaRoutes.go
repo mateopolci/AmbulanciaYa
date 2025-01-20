@@ -12,6 +12,7 @@ func SetupAmbulanciaRoutes(router *gin.Engine, service *services.AmbulanciaServi
     ambulancia := router.Group("/ambulancias")
     {
         ambulancia.GET("", ambulanciaController.GetAmbulancias)
+        ambulancia.GET("/desc", ambulanciaController.GetAmbulanciasDesc)
         ambulancia.GET("/:id", ambulanciaController.GetAmbulancia)
         ambulancia.POST("", ambulanciaController.PostAmbulancia)
         ambulancia.PUT("/:id", ambulanciaController.PutAmbulancia)

@@ -12,6 +12,7 @@ type Reporte struct {
 
 // DTO
 type ReporteDTO struct {
+	Id               string `json:"id"`
 	Descripcion      string `json:"descripcion" gorm:"type:text;not null"`
 	Fecha            string `json:"fecha" gorm:"type:varchar(10);not null"`
 	Hora             string `json:"hora" gorm:"type:varchar(8);not null"`
@@ -22,6 +23,7 @@ type ReporteDTO struct {
 // Método DTO de reporte
 func (r *Reporte) ReporteToDTO() ReporteDTO {
 	return ReporteDTO{
+		Id:               r.Id,
 		Descripcion:      r.Descripcion,
 		Fecha:            r.Fecha,
 		Hora:             r.Hora,

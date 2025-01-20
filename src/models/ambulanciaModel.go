@@ -14,6 +14,7 @@ type Ambulancia struct {
 
 // DTO
 type AmbulanciaDTO struct {
+	Id           string `json:"id"`
 	Patente      string `json:"patente"`
 	Inventario   bool   `json:"inventario"`
 	Vtv          bool   `json:"vtv"`
@@ -26,6 +27,7 @@ type AmbulanciaDTO struct {
 // Método DTO de ambulancia
 func (a *Ambulancia) AmbulanciaToDTO() AmbulanciaDTO {
 	return AmbulanciaDTO{
+		Id:           a.Id,
 		Patente:      a.Patente,
 		Inventario:   a.Inventario,
 		Vtv:          a.Vtv,
@@ -39,4 +41,16 @@ func (a *Ambulancia) AmbulanciaToDTO() AmbulanciaDTO {
 //Especificacion del nombre de la bdd
 func (Ambulancia) TableName() string {
 	return "ambulancias"
+}
+
+// DTO para service de descripcion de ambulancia
+type AmbulanciaDescDTO struct {
+	Id         string `json:"id"`
+	Patente    string `json:"patente"`
+	Inventario bool   `json:"inventario"`
+	Vtv        bool   `json:"vtv"`
+	Seguro     bool   `json:"seguro"`
+	Chofer     string `json:"chofer"`
+	Paramedico string `json:"paramedico"`
+	Base       bool   `json:"base"`
 }

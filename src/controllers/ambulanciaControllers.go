@@ -25,6 +25,15 @@ func (c *AmbulanciaController) GetAmbulancias(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, ambulanciasDTO)
 }
 
+func (c *AmbulanciaController) GetAmbulanciasDesc(ctx *gin.Context) {
+    ambulanciasDTO, err := c.service.GetAllAmbulanciasDesc()
+    if err != nil {
+        ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+    ctx.JSON(http.StatusOK, ambulanciasDTO)
+}
+
 func (c *AmbulanciaController) GetAmbulancia(ctx *gin.Context) {
 	id := ctx.Param("id")
 	ambulanciaDTO, err := c.service.GetAmbulanciaById(id)

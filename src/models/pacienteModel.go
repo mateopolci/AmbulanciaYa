@@ -9,6 +9,7 @@ type Paciente struct {
 
 // DTO
 type PacienteDTO struct {
+	Id             string `json:"id"`
 	NombreCompleto string `json:"nombreCompleto"`
 	Telefono       string `json:"telefono"`
 }
@@ -16,6 +17,7 @@ type PacienteDTO struct {
 // Método para convertir un Accidente en un DTO
 func (p *Paciente) PacienteToDTO() PacienteDTO {
 	return PacienteDTO{
+		Id:             p.Id,
 		NombreCompleto: p.NombreCompleto,
 		Telefono:       p.Telefono,
 	}

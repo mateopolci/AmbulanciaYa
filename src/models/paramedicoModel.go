@@ -12,6 +12,7 @@ type Paramedico struct {
 
 // DTO
 type ParamedicoDTO struct {
+	Id             string `json:"id"`
 	NombreCompleto string `json:"nombreCompleto"`
 	Dni            string `json:"dni"`
 	Email          string `json:"email"`
@@ -22,6 +23,7 @@ type ParamedicoDTO struct {
 // Método para convertir un Paramedico en un DTO
 func (p *Paramedico) ParamedicoToDTO() ParamedicoDTO {
 	return ParamedicoDTO{
+		Id:             p.Id,
 		NombreCompleto: p.NombreCompleto,
 		Dni:            p.Dni,
 		Email:          p.Email,
@@ -31,6 +33,6 @@ func (p *Paramedico) ParamedicoToDTO() ParamedicoDTO {
 
 // DTO para el login
 type LoginRequest struct {
-    Email    string `json:"email" binding:"required,email"`
-    Password string `json:"password" binding:"required,min=6,max=20"`
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=6,max=20"`
 }
