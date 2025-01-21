@@ -13,6 +13,7 @@ func SetupPacienteRoutes(router *gin.Engine, service *services.PacienteService) 
 	{
 		paciente.GET("", pacienteController.GetPacientes)
 		paciente.GET("/:id", pacienteController.GetPaciente)
+		paciente.GET("/telefono/:telefono", pacienteController.GetByTelefono)
 		paciente.POST("", pacienteController.PostPaciente)
 		paciente.PUT("/:id", pacienteController.PutPaciente)
 		paciente.DELETE("/:id", pacienteController.DeletePaciente)

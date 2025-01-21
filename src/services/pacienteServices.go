@@ -29,6 +29,16 @@ func (s *PacienteService) GetAll() ([]models.PacienteDTO, error) {
 	return pacientesDTO, nil
 }
 
+// Consulta un paciente por su telefono
+func (s *PacienteService) GetByTelefono(telefono string) (models.PacienteDTO, error) {
+	var paciente models.Paciente
+	result := s.db.First(&paciente, "telefono = ?", telefono)
+	if result.Error != nil {
+		return models.PacienteDTO{}, result.Error
+	}
+	return paciente.PacienteToDTO(), nil
+}
+
 // GetById obtiene un paciente por su ID
 func (s *PacienteService) GetById(id string) (models.PacienteDTO, error) {
 	var paciente models.Paciente

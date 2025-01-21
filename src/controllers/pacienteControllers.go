@@ -35,6 +35,16 @@ func (c *PacienteController) GetPaciente(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, pacienteDTO)
 }
 
+func (c *PacienteController) GetByTelefono(ctx *gin.Context) {
+	telefono := ctx.Param("telefono")
+	pacienteDTO, err := c.service.GetByTelefono(telefono)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "Paciente no encontrado"})
+		return
+	}
+	ctx.JSON(http.StatusOK, pacienteDTO)
+}
+
 func (c *PacienteController) PostPaciente(ctx *gin.Context) {
 	var pacienteDTO models.PacienteDTO
 	if err := ctx.ShouldBindJSON(&pacienteDTO); err != nil {
