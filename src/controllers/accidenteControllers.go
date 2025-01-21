@@ -59,6 +59,22 @@ func (c *AccidenteController) PostAccidente(ctx *gin.Context) {
     ctx.JSON(http.StatusCreated, accidente.AccidenteToDTO())
 }
 
+func (c *AccidenteController) PostAccidenteAndSendAmbulancia(ctx *gin.Context) {
+    var accidenteDTO models.AccidenteDTO
+    if err := ctx.ShouldBindJSON(&accidenteDTO); err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    accidente, err := c.service.CreateAccidenteAndSendAmbulancia(accidenteDTO)
+    if err != nil {
+        ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+    
+    ctx.JSON(http.StatusCreated, accidente.AccidenteToDTO())
+}
+
 func (c *AccidenteController) PutAccidente(ctx *gin.Context) {
     id := ctx.Param("id")
     var accidenteDTO models.AccidenteDTO

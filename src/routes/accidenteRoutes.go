@@ -15,6 +15,7 @@ func SetupAccidenteRoutes(router *gin.Engine, service *services.AccidenteService
         accidente.GET("/desc", accidenteController.GetAccidentesDesc)
         accidente.GET("/:id", accidenteController.GetAccidente)
         accidente.POST("", accidenteController.PostAccidente)
+        accidente.POST("/enviarambulancia", accidenteController.PostAccidenteAndSendAmbulancia)
         accidente.PUT("/:id", accidenteController.PutAccidente)
         accidente.DELETE("/:id", accidenteController.DeleteAccidente)
     }
