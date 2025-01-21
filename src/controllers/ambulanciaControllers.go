@@ -44,6 +44,15 @@ func (c *AmbulanciaController) GetAmbulancia(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, ambulanciaDTO)
 }
 
+func (c *AmbulanciaController) GetAmbulanciaDisponible(ctx *gin.Context) {
+    ambulanciaDTO, err := c.service.GetAmbulanciaDisp()
+    if err != nil {
+        ctx.JSON(http.StatusNotFound, gin.H{"error": "No hay ambulancias disponibles"})
+        return
+    }
+    ctx.JSON(http.StatusOK, ambulanciaDTO)
+}
+
 func (c *AmbulanciaController) PostAmbulancia(ctx *gin.Context) {
 	var ambulanciaDTO models.AmbulanciaDTO
 	if err := ctx.ShouldBindJSON(&ambulanciaDTO); err != nil {

@@ -73,6 +73,22 @@ func (s *AmbulanciaService) GetAmbulanciaById(id string) (models.AmbulanciaDTO, 
 	return ambulancia.AmbulanciaToDTO(), nil
 }
 
+// Obtener el id de la primera ambulancia disponible
+func (s *AmbulanciaService) GetAmbulanciaDisp() (models.AmbulanciaDTO, error) {
+    var ambulancia models.Ambulancia
+    
+    result := s.db.Where(
+        "inventario = ? AND vtv = ? AND seguro = ? AND base = ?",
+        true, true, true, true,
+    ).First(&ambulancia)
+    
+    if result.Error != nil {
+        return models.AmbulanciaDTO{}, result.Error
+    }
+    
+    return ambulancia.AmbulanciaToDTO(), nil
+}
+
 // Crear una nueva ambulancia
 func (s *AmbulanciaService) CreateAmbulancia(ambulanciaDTO models.AmbulanciaDTO) (models.Ambulancia, error) {
 	ambulancia := models.Ambulancia{
