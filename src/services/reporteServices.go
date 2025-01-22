@@ -39,6 +39,40 @@ func (s *ReporteService) GetReporteById(id string) (models.ReporteDTO, error) {
 	return reporte.ReporteToDTO(), nil
 }
 
+// Obtener un reporte por su ID con descripcion
+func (s *ReporteService) GetReporteDescById(id string) (models.ReporteDescDTO, error) {
+    var result struct {
+        models.Reporte
+        HospitalNombre *string `gorm:"column:hospital_nombre"`
+    }
+
+    err := s.db.Table("reportes").
+        Select("reportes.*, hospitales.nombre as hospital_nombre").
+        Joins("LEFT JOIN accidentes ON reportes.accidenteid = accidentes.id").
+        Joins("LEFT JOIN hospitales ON accidentes.hospitalid = hospitales.id").
+        Where("reportes.id = ?", id).
+        First(&result).Error
+
+    if err != nil {
+        return models.ReporteDescDTO{}, err
+    }
+
+    hospitalNombre := "-"
+    if result.HospitalNombre != nil {
+        hospitalNombre = *result.HospitalNombre
+    }
+
+    return models.ReporteDescDTO{
+        Id:               result.Id,
+        Descripcion:      result.Descripcion,
+        Fecha:           result.Fecha,
+        Hora:            result.Hora,
+        RequiereTraslado: result.RequiereTraslado,
+        AccidenteId:      result.AccidenteId,
+        Hospital:         hospitalNombre,
+    }, nil
+}
+
 // Crear un nuevo reporte
 func (s *ReporteService) CreateReporte(reporteDTO models.ReporteDTO) (models.Reporte, error) {
 	reporte := models.Reporte{

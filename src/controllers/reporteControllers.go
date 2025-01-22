@@ -34,6 +34,16 @@ func (c *ReporteController) GetReporte(ctx *gin.Context) {
     ctx.JSON(http.StatusOK, reporteDTO)
 }
 
+func (c *ReporteController) GetReporteDesc(ctx *gin.Context) {
+    id := ctx.Param("id")
+    reporteDTO, err := c.service.GetReporteDescById(id)
+    if err != nil {
+        ctx.JSON(http.StatusNotFound, gin.H{"error": "Reporte no encontrado"})
+        return
+    }
+    ctx.JSON(http.StatusOK, reporteDTO)
+}
+
 func (c *ReporteController) PostReporte(ctx *gin.Context) {
 	var reporteDTO models.ReporteDTO
 	if err := ctx.ShouldBindJSON(&reporteDTO); err != nil {

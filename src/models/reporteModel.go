@@ -13,11 +13,11 @@ type Reporte struct {
 // DTO
 type ReporteDTO struct {
 	Id               string `json:"id"`
-	Descripcion      string `json:"descripcion" gorm:"type:text;not null"`
-	Fecha            string `json:"fecha" gorm:"type:varchar(10);not null"`
-	Hora             string `json:"hora" gorm:"type:varchar(8);not null"`
-	RequiereTraslado bool   `json:"requiereTraslado" gorm:"column:requieretraslado;type:boolean;not null"`
-	AccidenteId      string `json:"accidenteId" gorm:"column:accidenteid;type:uuid;not null"`
+	Descripcion      string `json:"descripcion"`
+	Fecha            string `json:"fecha"`
+	Hora             string `json:"hora"`
+	RequiereTraslado bool   `json:"requiereTraslado"`
+	AccidenteId      string `json:"accidenteId"`
 }
 
 // Método DTO de reporte
@@ -30,4 +30,15 @@ func (r *Reporte) ReporteToDTO() ReporteDTO {
 		RequiereTraslado: r.RequiereTraslado,
 		AccidenteId:      r.AccidenteId,
 	}
+}
+
+// DTO para service de descripcion de Reporte
+type ReporteDescDTO struct {
+	Id               string `json:"id"`
+	Descripcion      string `json:"descripcion"`
+	Fecha            string `json:"fecha"`
+	Hora             string `json:"hora"`
+	RequiereTraslado bool   `json:"requiereTraslado"`
+	AccidenteId      string `json:"accidenteId"`
+	Hospital		 string `json:"hospital"`
 }
