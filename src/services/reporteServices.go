@@ -40,7 +40,7 @@ func (s *ReporteService) GetReporteById(id string) (models.ReporteDTO, error) {
 }
 
 // Obtener un reporte por su ID con descripcion
-func (s *ReporteService) GetReporteDescById(id string) (models.ReporteDescDTO, error) {
+func (s *ReporteService) GetReporteByAccidenteId(accidenteId string) (models.ReporteDescDTO, error) {
     var result struct {
         models.Reporte
         HospitalNombre *string `gorm:"column:hospital_nombre"`
@@ -50,7 +50,7 @@ func (s *ReporteService) GetReporteDescById(id string) (models.ReporteDescDTO, e
         Select("reportes.*, hospitales.nombre as hospital_nombre").
         Joins("LEFT JOIN accidentes ON reportes.accidenteid = accidentes.id").
         Joins("LEFT JOIN hospitales ON accidentes.hospitalid = hospitales.id").
-        Where("reportes.id = ?", id).
+        Where("reportes.accidenteid = ?", accidenteId).
         First(&result).Error
 
     if err != nil {

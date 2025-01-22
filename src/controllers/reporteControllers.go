@@ -34,9 +34,9 @@ func (c *ReporteController) GetReporte(ctx *gin.Context) {
     ctx.JSON(http.StatusOK, reporteDTO)
 }
 
-func (c *ReporteController) GetReporteDesc(ctx *gin.Context) {
-    id := ctx.Param("id")
-    reporteDTO, err := c.service.GetReporteDescById(id)
+func (c *ReporteController) GetReporteByAccidente(ctx *gin.Context) {
+    accidenteId := ctx.Param("accidenteId")
+    reporteDTO, err := c.service.GetReporteByAccidenteId(accidenteId)
     if err != nil {
         ctx.JSON(http.StatusNotFound, gin.H{"error": "Reporte no encontrado"})
         return
