@@ -143,7 +143,7 @@ func (s *AmbulanciaService) PedidoAmbulancia(pedido models.AmbulanciaPedidoDTO) 
     // Recuperar ambulancia disponible
 	var ambulanciaDisp models.AmbulanciaDTO
     var err error
-    maxIntentos := 4
+    maxIntentos := 7
 
     for intento := 0; intento < maxIntentos; intento++ {
         ambulanciaDisp, err = s.GetAmbulanciaDisp()
