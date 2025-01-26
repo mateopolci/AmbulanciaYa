@@ -92,3 +92,19 @@ func (c *AmbulanciaController) DeleteAmbulancia(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, gin.H{"message": "Ambulancia eliminada"})
 }
+
+func (c *AmbulanciaController) SolicitarAmbulancia(ctx *gin.Context) {
+    var pedidoDTO models.AmbulanciaPedidoDTO
+    if err := ctx.ShouldBindJSON(&pedidoDTO); err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    mensaje, err := c.service.PedidoAmbulancia(pedidoDTO)
+    if err != nil {
+        ctx.JSON(http.StatusInternalServerError, gin.H{"error": mensaje})
+        return
+    }
+
+    ctx.JSON(http.StatusOK, gin.H{"message": mensaje})
+}

@@ -54,3 +54,11 @@ type AmbulanciaDescDTO struct {
 	Paramedico string `json:"paramedico"`
 	Base       bool   `json:"base"`
 }
+
+// DTO para pedido de ambulancia
+type AmbulanciaPedidoDTO struct {
+	Nombre      string `json:"nombre"`
+	Telefono    string `json:"telefono"`
+	Direccion   string `json:"direccion"`
+	Descripcion string `json:"descripcion"`
+}

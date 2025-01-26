@@ -18,5 +18,6 @@ func SetupAmbulanciaRoutes(router *gin.Engine, service *services.AmbulanciaServi
 		ambulancia.POST("", ambulanciaController.PostAmbulancia)
 		ambulancia.PUT("/:id", ambulanciaController.PutAmbulancia)
 		ambulancia.DELETE("/:id", ambulanciaController.DeleteAmbulancia)
+        ambulancia.POST("/solicitar", ambulanciaController.SolicitarAmbulancia)
 	}
 }

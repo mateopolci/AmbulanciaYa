@@ -1,17 +1,25 @@
 package services
 
 import (
+	"time"
+
 	"github.com/mateopolci/AmbulanciaYa/src/models"
 	"gorm.io/gorm"
 )
 
 type AmbulanciaService struct {
-	db *gorm.DB
+    db *gorm.DB
+    pacienteService *PacienteService
+	accidenteService *AccidenteService
 }
 
 // Constructor del servicio
-func NewAmbulanciaService(db *gorm.DB) *AmbulanciaService {
-	return &AmbulanciaService{db: db}
+func NewAmbulanciaService(db *gorm.DB, pacienteService *PacienteService, accidenteService *AccidenteService) *AmbulanciaService {
+    return &AmbulanciaService{
+        db: db,
+        pacienteService: pacienteService,
+        accidenteService: accidenteService,
+    }
 }
 
 // Obtener todas las ambulancias
@@ -128,4 +136,49 @@ func (s *AmbulanciaService) UpdateAmbulancia(id string, ambulanciaDTO models.Amb
 func (s *AmbulanciaService) DeleteAmbulancia(id string) error {
 	result := s.db.Delete(&models.Ambulancia{}, "id = ?", id)
 	return result.Error
+}
+
+// Pedido de ambulancia 
+func (s *AmbulanciaService) PedidoAmbulancia(pedido models.AmbulanciaPedidoDTO) (string, error) {
+    // Recuperar ambulancia disponible
+    ambulanciaDisp, err := s.GetAmbulanciaDisp()
+    if err != nil || ambulanciaDisp.Id == "" {
+        return "No se encuentran ambulancias disponibles", err
+    }
+    idAmbulanciaEncontrada := ambulanciaDisp.Id
+
+    // Consultar id de paciente o crearlo
+    paciente, err := s.pacienteService.GetByTelefono(pedido.Telefono)
+    var idNuevoPaciente string
+
+    if err != nil || paciente.Id == "" {
+        nuevoPaciente, err := s.pacienteService.Create(models.PacienteDTO{
+            NombreCompleto: pedido.Nombre,
+            Telefono:      pedido.Telefono,
+        })
+        if err != nil {
+            return "Error al crear paciente", err
+        }
+        idNuevoPaciente = nuevoPaciente.Id
+    } else {
+        idNuevoPaciente = paciente.Id
+    }
+
+    // Crear accidente y enviar ambulancia
+    now := time.Now()
+    accidente := models.AccidenteDTO{
+        Direccion:    pedido.Direccion,
+        Descripcion:  pedido.Descripcion,
+        Fecha:        now.Format("2006-01-02"),
+        Hora:         now.Format("15:04"),
+        AmbulanciaId: idAmbulanciaEncontrada,
+        PacienteId:   idNuevoPaciente,
+    }
+
+    _, err = s.accidenteService.CreateAccidenteAndSendAmbulancia(accidente)
+    if err != nil {
+        return "Error al registrar el accidente", err
+    }
+
+    return "La ambulancia ha sido enviada", nil
 }

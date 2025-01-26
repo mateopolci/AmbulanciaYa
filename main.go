@@ -35,7 +35,7 @@ func main() {
 	paramedicoService := services.NewParamedicoService(database)
 	choferService := services.NewChoferService(database)
 	reporteService := services.NewReporteService(database)
-	ambulanciaService := services.NewAmbulanciaService(database)
+	ambulanciaService := services.NewAmbulanciaService(database, pacienteService, accidenteService)
 
 	router := gin.Default()
 	router.Use(middleware.SetupCORS())
