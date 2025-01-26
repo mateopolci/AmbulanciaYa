@@ -141,7 +141,20 @@ func (s *AmbulanciaService) DeleteAmbulancia(id string) error {
 // Pedido de ambulancia 
 func (s *AmbulanciaService) PedidoAmbulancia(pedido models.AmbulanciaPedidoDTO) (string, error) {
     // Recuperar ambulancia disponible
-    ambulanciaDisp, err := s.GetAmbulanciaDisp()
+	var ambulanciaDisp models.AmbulanciaDTO
+    var err error
+    maxIntentos := 4
+
+    for intento := 0; intento < maxIntentos; intento++ {
+        ambulanciaDisp, err = s.GetAmbulanciaDisp()
+        if err == nil && ambulanciaDisp.Id != "" {
+            break
+        }
+        if intento < maxIntentos-1 {
+            time.Sleep(10 * time.Second)
+        }
+    }
+
     if err != nil || ambulanciaDisp.Id == "" {
         return "No se encuentran ambulancias disponibles", err
     }
