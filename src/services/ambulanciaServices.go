@@ -141,7 +141,7 @@ func (s *AmbulanciaService) DeleteAmbulancia(id string) error {
 // Pedido de ambulancia 
 func (s *AmbulanciaService) PedidoAmbulancia(pedido models.AmbulanciaPedidoDTO) (string, error) {
     // Recuperar ambulancia disponible
-	var ambulanciaDisp models.AmbulanciaDTO
+    var ambulanciaDisp models.AmbulanciaDTO
     var err error
     maxIntentos := 7
 
@@ -160,21 +160,24 @@ func (s *AmbulanciaService) PedidoAmbulancia(pedido models.AmbulanciaPedidoDTO) 
     }
     idAmbulanciaEncontrada := ambulanciaDisp.Id
 
-    // Consultar id de paciente o crearlo
-    paciente, err := s.pacienteService.GetByTelefono(pedido.Telefono)
-    var idNuevoPaciente string
+    // Inicializar pacienteId como nil
+    var pacienteId *string
 
-    if err != nil || paciente.Id == "" {
-        nuevoPaciente, err := s.pacienteService.Create(models.PacienteDTO{
-            NombreCompleto: pedido.Nombre,
-            Telefono:      pedido.Telefono,
-        })
-        if err != nil {
-            return "Error al crear paciente", err
+    // Solo procesar paciente si se proporcionan nombre y teléfono
+    if pedido.Nombre != "" && pedido.Telefono != "" {
+        paciente, err := s.pacienteService.GetByTelefono(pedido.Telefono)
+        if err != nil || paciente.Id == "" {
+            nuevoPaciente, err := s.pacienteService.Create(models.PacienteDTO{
+                NombreCompleto: pedido.Nombre,
+                Telefono:      pedido.Telefono,
+            })
+            if err != nil {
+                return "Error al crear paciente", err
+            }
+            pacienteId = &nuevoPaciente.Id
+        } else {
+            pacienteId = &paciente.Id
         }
-        idNuevoPaciente = nuevoPaciente.Id
-    } else {
-        idNuevoPaciente = paciente.Id
     }
 
     // Crear accidente y enviar ambulancia
@@ -185,7 +188,7 @@ func (s *AmbulanciaService) PedidoAmbulancia(pedido models.AmbulanciaPedidoDTO) 
         Fecha:        now.Format("2006-01-02"),
         Hora:         now.Format("15:04"),
         AmbulanciaId: idAmbulanciaEncontrada,
-        PacienteId:   idNuevoPaciente,
+        PacienteId:   pacienteId,
     }
 
     _, err = s.accidenteService.CreateAccidenteAndSendAmbulancia(accidente)

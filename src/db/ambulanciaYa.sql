@@ -59,7 +59,7 @@ CREATE TABLE accidentes (
     hora VARCHAR(8) NOT NULL,
     ambulanciaID UUID NOT NULL,
     hospitalID UUID,
-    pacienteID UUID NOT NULL,
+    pacienteID UUID,
     FOREIGN KEY (ambulanciaID) REFERENCES ambulancias(id),
     FOREIGN KEY (hospitalID) REFERENCES hospitales(id),
     FOREIGN KEY (pacienteID) REFERENCES pacientes(id)
@@ -80,12 +80,6 @@ CREATE TABLE reportes (
 
 -- CONSTRAINTS
 
--- Constraint para Paciente-Accidente (1:1..*) 
--- Asegura que cada paciente tenga al menos un accidente
-ALTER TABLE accidentes 
-ADD CONSTRAINT check_paciente_accidentes
-CHECK (pacienteID IS NOT NULL);
-
 -- Constraint para Accidente-Reporte (1:0..1)
 -- Asegura que un accidente no puede tener más de un reporte
 ALTER TABLE reportes
@@ -101,6 +95,13 @@ UNIQUE (choferID);
 ALTER TABLE ambulancias
 ADD CONSTRAINT unique_paramedico_ambulancia 
 UNIQUE (paramedicoID);
+
+-- Añadir constraint de unicidad para accidente-paciente (1..*:0..1) 
+ALTER TABLE accidentes
+ADD CONSTRAINT accidentes_pacienteid_fkey 
+FOREIGN KEY (pacienteID) 
+REFERENCES pacientes(id)
+ON DELETE SET NULL;
 
 ---------------------------------------------------------------------------------------------------------------------------------
 

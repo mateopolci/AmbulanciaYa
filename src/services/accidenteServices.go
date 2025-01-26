@@ -38,7 +38,7 @@ func (s *AccidenteService) GetAllAccidentesDesc() ([]models.AccidenteDescDTO, er
         models.Accidente
         AmbulanciaPatente string  `gorm:"column:ambulancia_patente"`
         HospitalNombre    *string `gorm:"column:hospital_nombre"`
-        PacienteNombre    string  `gorm:"column:paciente_nombre"`
+        PacienteNombre    *string `gorm:"column:paciente_nombre"`
     }
 
     err := s.db.Table("accidentes").
@@ -59,6 +59,11 @@ func (s *AccidenteService) GetAllAccidentesDesc() ([]models.AccidenteDescDTO, er
             hospitalNombre = *res.HospitalNombre
         }
 
+        pacienteNombre := "-"
+        if res.PacienteNombre != nil {
+            pacienteNombre = *res.PacienteNombre
+        }
+
         accidentesDTO[i] = models.AccidenteDescDTO{
             Id:          res.Id,
             Direccion:   res.Direccion,
@@ -67,7 +72,7 @@ func (s *AccidenteService) GetAllAccidentesDesc() ([]models.AccidenteDescDTO, er
             Hora:        res.Hora,
             Ambulancia:  res.AmbulanciaPatente,
             Hospital:    &hospitalNombre,
-            Paciente:    res.PacienteNombre,
+            Paciente:    pacienteNombre,
         }
     }
     return accidentesDTO, nil
