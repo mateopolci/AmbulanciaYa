@@ -75,6 +75,24 @@ func (c *ReporteController) PutReporte(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, reporte.ReporteToDTO())
 }
 
+func (c *ReporteController) UpdateReporteAndHospital(ctx *gin.Context) {
+    id := ctx.Param("reporteId")
+    var updateDTO models.ReporteUpdateDTO
+    
+    if err := ctx.ShouldBindJSON(&updateDTO); err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    reporte, err := c.service.UpdateReporteAndHospital(id, updateDTO)
+    if err != nil {
+        ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+    ctx.JSON(http.StatusOK, reporte.ReporteToDTO())
+}
+
 func (c *ReporteController) DeleteReporte(ctx *gin.Context) {
     id := ctx.Param("id")
     if err := c.service.DeleteReporte(id); err != nil {

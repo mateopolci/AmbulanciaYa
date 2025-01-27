@@ -40,5 +40,15 @@ type ReporteDescDTO struct {
 	Hora             string `json:"hora"`
 	RequiereTraslado bool   `json:"requiereTraslado"`
 	AccidenteId      string `json:"accidenteId"`
-	Hospital		 string `json:"hospital"`
+	Hospital         string `json:"hospital"`
+}
+
+// DTO para actualizar un reporte y el hospital de traslado en el registro del accidente
+type ReporteUpdateDTO struct {
+	Descripcion      string `json:"descripcion"`
+	Fecha            string `json:"fecha"`
+	Hora             string `json:"hora"`
+	RequiereTraslado bool   `json:"requiereTraslado"`
+	AccidenteId      string `json:"accidenteId"`
+	HospitalId       string `json:"hospitalId"`
 }

@@ -104,6 +104,44 @@ func (s *ReporteService) UpdateReporte(id string, reporteDTO models.ReporteDTO) 
 	return reporte, result.Error
 }
 
+// Modificar un reporte y el hospitalId de su accidente
+
+func (s *ReporteService) UpdateReporteAndHospital(id string, updateDTO models.ReporteUpdateDTO) (models.Reporte, error) {
+    tx := s.db.Begin()
+
+    // Actualizar el reporte
+    var reporte models.Reporte
+    if err := tx.First(&reporte, "id = ?", id).Error; err != nil {
+        tx.Rollback()
+        return models.Reporte{}, err
+    }
+
+    reporte.Descripcion = updateDTO.Descripcion
+    reporte.Fecha = updateDTO.Fecha
+    reporte.Hora = updateDTO.Hora
+    reporte.RequiereTraslado = updateDTO.RequiereTraslado
+    reporte.AccidenteId = updateDTO.AccidenteId
+
+    if err := tx.Save(&reporte).Error; err != nil {
+        tx.Rollback()
+        return models.Reporte{}, err
+    }
+
+    // Actualizar el hospital del accidente
+    if err := tx.Model(&models.Accidente{}).
+        Where("id = ?", updateDTO.AccidenteId).
+        Update("hospitalid", updateDTO.HospitalId).Error; err != nil {
+        tx.Rollback()
+        return models.Reporte{}, err
+    }
+
+    if err := tx.Commit().Error; err != nil {
+        return models.Reporte{}, err
+    }
+
+    return reporte, nil
+}
+
 // Eliminar un reporte existente
 func (s *ReporteService) DeleteReporte(id string) error {
     result := s.db.Delete(&models.Reporte{}, "id = ?", id)

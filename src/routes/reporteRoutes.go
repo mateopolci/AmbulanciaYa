@@ -16,6 +16,7 @@ func SetupReporteRoutes(router *gin.Engine, service *services.ReporteService) {
         accidente.GET("/accidente/:accidenteId", reporteController.GetReporteByAccidente)
         accidente.POST("", reporteController.PostReporte)
         accidente.PUT("/:id", reporteController.PutReporte)
+        accidente.PUT("/accidente/:reporteId", reporteController.UpdateReporteAndHospital)
         accidente.DELETE("/:id", reporteController.DeleteReporte)
     }
 }
