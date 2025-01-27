@@ -181,7 +181,11 @@ func (s *AmbulanciaService) PedidoAmbulancia(pedido models.AmbulanciaPedidoDTO) 
     }
 
     // Crear accidente y enviar ambulancia
-    now := time.Now()
+    loc, err := time.LoadLocation("America/Argentina/Buenos_Aires")
+    if err != nil {
+        return "Error al configurar zona horaria", err
+    }
+    now := time.Now().In(loc)
     accidente := models.AccidenteDTO{
         Direccion:    pedido.Direccion,
         Descripcion:  pedido.Descripcion,
