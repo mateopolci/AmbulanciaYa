@@ -119,3 +119,12 @@ func (c *ReporteController) DeleteReporte(ctx *gin.Context) {
     }
     ctx.JSON(http.StatusOK, gin.H{"message": "Reporte eliminado"})
 }
+
+func (c *ReporteController) DeleteReporteByAccidente(ctx *gin.Context) {
+    accidenteId := ctx.Param("accidenteId")
+    if err := c.service.DeleteReporteByAccidenteId(accidenteId); err != nil {
+        ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+    ctx.JSON(http.StatusOK, gin.H{"message": "Reporte eliminado"})
+}

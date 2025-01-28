@@ -189,3 +189,9 @@ func (s *ReporteService) DeleteReporte(id string) error {
     result := s.db.Delete(&models.Reporte{}, "id = ?", id)
     return result.Error
 }
+
+//Eliminar un reporte con el id del accidente asociado
+func (s *ReporteService) DeleteReporteByAccidenteId(accidenteId string) error {
+    result := s.db.Delete(&models.Reporte{}, "accidenteid = ?", accidenteId)
+    return result.Error
+}
