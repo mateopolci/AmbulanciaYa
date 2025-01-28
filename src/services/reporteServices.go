@@ -109,7 +109,6 @@ func (s *ReporteService) UpdateReporte(id string, reporteDTO models.ReporteDTO) 
 func (s *ReporteService) UpdateReporteAndHospital(id string, updateDTO models.ReporteUpdateDTO) (models.Reporte, error) {
     tx := s.db.Begin()
 
-    // Actualizar el reporte
     var reporte models.Reporte
     if err := tx.First(&reporte, "id = ?", id).Error; err != nil {
         tx.Rollback()
@@ -127,12 +126,20 @@ func (s *ReporteService) UpdateReporteAndHospital(id string, updateDTO models.Re
         return models.Reporte{}, err
     }
 
-    // Actualizar el hospital del accidente
-    if err := tx.Model(&models.Accidente{}).
-        Where("id = ?", updateDTO.AccidenteId).
-        Update("hospitalid", updateDTO.HospitalId).Error; err != nil {
-        tx.Rollback()
-        return models.Reporte{}, err
+    // Update accidente's hospitalId (set to NULL if not provided)
+    updateQuery := tx.Model(&models.Accidente{}).Where("id = ?", updateDTO.AccidenteId)
+    if updateDTO.HospitalId != nil {
+        err := updateQuery.Update("hospitalid", updateDTO.HospitalId).Error
+        if err != nil {
+            tx.Rollback()
+            return models.Reporte{}, err
+        }
+    } else {
+        err := updateQuery.Update("hospitalid", nil).Error
+        if err != nil {
+            tx.Rollback()
+            return models.Reporte{}, err
+        }
     }
 
     if err := tx.Commit().Error; err != nil {
