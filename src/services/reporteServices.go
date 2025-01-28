@@ -87,6 +87,42 @@ func (s *ReporteService) CreateReporte(reporteDTO models.ReporteDTO) (models.Rep
 	return reporte, result.Error
 }
 
+// Crear un reporte y establecer el hospital en el accidente asociado
+
+func (s *ReporteService) CreateReporteAndUpdateHospital(accidenteId string, postDTO models.ReportePostDTO) (models.Reporte, error) {
+    tx := s.db.Begin()
+
+    // Create new reporte
+    reporte := models.Reporte{
+        Descripcion:      postDTO.Descripcion,
+        Fecha:           postDTO.Fecha,
+        Hora:            postDTO.Hora,
+        RequiereTraslado: postDTO.RequiereTraslado,
+        AccidenteId:      accidenteId,
+    }
+
+    if err := tx.Create(&reporte).Error; err != nil {
+        tx.Rollback()
+        return models.Reporte{}, err
+    }
+
+    // Update accidente's hospitalId if provided
+    if postDTO.HospitalId != nil {
+        if err := tx.Model(&models.Accidente{}).
+            Where("id = ?", accidenteId).
+            Update("hospitalid", postDTO.HospitalId).Error; err != nil {
+            tx.Rollback()
+            return models.Reporte{}, err
+        }
+    }
+
+    if err := tx.Commit().Error; err != nil {
+        return models.Reporte{}, err
+    }
+
+    return reporte, nil
+}
+
 // Actualizar un reporte existente
 func (s *ReporteService) UpdateReporte(id string, reporteDTO models.ReporteDTO) (models.Reporte, error) {
 	var reporte models.Reporte
@@ -105,7 +141,6 @@ func (s *ReporteService) UpdateReporte(id string, reporteDTO models.ReporteDTO) 
 }
 
 // Modificar un reporte y el hospitalId de su accidente
-
 func (s *ReporteService) UpdateReporteAndHospital(id string, updateDTO models.ReporteUpdateDTO) (models.Reporte, error) {
     tx := s.db.Begin()
 

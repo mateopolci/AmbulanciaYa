@@ -43,12 +43,22 @@ type ReporteDescDTO struct {
 	Hospital         string `json:"hospital"`
 }
 
-// DTO para actualizar un reporte y el hospital de traslado en el registro del accidente
+// DTO para actualizar un reporte y el hospital de traslado en el registro del accidente asociado
 type ReporteUpdateDTO struct {
 	Descripcion      string  `json:"descripcion"`
 	Fecha            string  `json:"fecha"`
 	Hora             string  `json:"hora"`
 	RequiereTraslado bool    `json:"requiereTraslado"`
 	AccidenteId      string  `json:"accidenteId"`
+	HospitalId       *string `json:"hospitalId,omitempty"`
+}
+
+// DTO para dar de alta un reporte y el hospital de traslado en el registro del accidente asociado
+
+type ReportePostDTO struct {
+	Descripcion      string  `json:"descripcion"`
+	Fecha            string  `json:"fecha"`
+	Hora             string  `json:"hora"`
+	RequiereTraslado bool    `json:"requiereTraslado"`
 	HospitalId       *string `json:"hospitalId,omitempty"`
 }

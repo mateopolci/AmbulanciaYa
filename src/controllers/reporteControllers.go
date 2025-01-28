@@ -59,6 +59,24 @@ func (c *ReporteController) PostReporte(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, reporte.ReporteToDTO())
 }
 
+func (c *ReporteController) CreateReporteAndUpdateHospital(ctx *gin.Context) {
+    accidenteId := ctx.Param("accidenteId")
+    var postDTO models.ReportePostDTO
+    
+    if err := ctx.ShouldBindJSON(&postDTO); err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    reporte, err := c.service.CreateReporteAndUpdateHospital(accidenteId, postDTO)
+    if err != nil {
+        ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+    ctx.JSON(http.StatusCreated, reporte.ReporteToDTO())
+}
+
 func (c *ReporteController) PutReporte(ctx *gin.Context) {
 	id := ctx.Param("id")
 	var reporteDTO models.ReporteDTO
