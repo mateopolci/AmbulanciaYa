@@ -15,17 +15,23 @@ func SetupAmbulanciaRoutes(router *gin.Engine, service *services.AmbulanciaServi
     {
         ambulancia.POST("/solicitar", ambulanciaController.SolicitarAmbulancia) //ESTA ES LA RUTA DE ENTRADA PARA PEDIR UNA AMBULANCIA
     }
-    
-    // Rutas protegidas para admin
+
+    // Rutas protegidas para paramedico
     ambulanciaAuth := router.Group("/ambulancias")
-    ambulanciaAuth.Use(middleware.AuthMiddleware(), middleware.IsAdminMiddleware())
+    ambulanciaAuth.Use(middleware.AuthMiddleware())
     {
         ambulanciaAuth.GET("", ambulanciaController.GetAmbulancias)
         ambulanciaAuth.GET("/desc", ambulanciaController.GetAmbulanciasDesc)
         ambulanciaAuth.GET("/:id", ambulanciaController.GetAmbulancia)
-        ambulanciaAuth.GET("/disp", ambulanciaController.GetAmbulanciaDisponible)
-        ambulanciaAuth.POST("", ambulanciaController.PostAmbulancia)
-        ambulanciaAuth.PUT("/:id", ambulanciaController.PutAmbulancia)
-        ambulanciaAuth.DELETE("/:id", ambulanciaController.DeleteAmbulancia)
+    }
+
+    // Rutas protegidas para admin
+    ambulanciaAdmin := router.Group("/ambulancias")
+    ambulanciaAdmin.Use(middleware.AuthMiddleware(), middleware.IsAdminMiddleware())
+    {
+        ambulanciaAdmin.GET("/disp", ambulanciaController.GetAmbulanciaDisponible)
+        ambulanciaAdmin.POST("", ambulanciaController.PostAmbulancia)
+        ambulanciaAdmin.PUT("/:id", ambulanciaController.PutAmbulancia)
+        ambulanciaAdmin.DELETE("/:id", ambulanciaController.DeleteAmbulancia)
     }
 }
