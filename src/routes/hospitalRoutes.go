@@ -10,15 +10,22 @@ import (
 func SetupHospitalRoutes(router *gin.Engine, service *services.HospitalService) {
     hospitalController := controllers.NewHospitalController(service)
     
-    // Todas las rutas de hospital requieren ser admin
-    hospital := router.Group("/hospitales")
-    hospital.Use(middleware.AuthMiddleware(), middleware.IsAdminMiddleware())
+    // Rutas protegidas para paramedico
+    hospitalAuth := router.Group("/hospitales")
+    hospitalAuth.Use(middleware.AuthMiddleware())
 
     {
-        hospital.GET("", hospitalController.GetHospitales)
-        hospital.GET("/:id", hospitalController.GetHospital)
-        hospital.POST("", hospitalController.PostHospital)
-        hospital.PUT("/:id", hospitalController.PutHospital)
-        hospital.DELETE("/:id", hospitalController.DeleteHospital)
+        hospitalAuth.GET("", hospitalController.GetHospitales)
+        hospitalAuth.GET("/:id", hospitalController.GetHospital)
+    }
+
+    // Rutas protegidas para admin
+    hospitalAdmin := router.Group("/hospitales")
+    hospitalAdmin.Use(middleware.AuthMiddleware(), middleware.IsAdminMiddleware())
+
+    {
+        hospitalAdmin.POST("", hospitalController.PostHospital)
+        hospitalAdmin.PUT("/:id", hospitalController.PutHospital)
+        hospitalAdmin.DELETE("/:id", hospitalController.DeleteHospital)
     }
 }
