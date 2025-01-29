@@ -108,7 +108,7 @@ func (s *AccidenteService) CreateAccidente(accidenteDTO models.AccidenteDTO) (mo
 func (s *AccidenteService) CreateAccidenteAndSendAmbulancia(accidenteDTO models.AccidenteDTO) (models.Accidente, error) {
 	tx := s.db.Begin()
 
-	// Actualizar el estado de de Base la ambulancia a false
+	// Actualizar el estado de Base de la ambulancia a false
 	if err := tx.Model(&models.Ambulancia{}).
 		Where("id = ?", accidenteDTO.AmbulanciaId).
 		Update("base", false).Error; err != nil {

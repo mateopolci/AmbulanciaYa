@@ -109,7 +109,7 @@ func (s *ParamedicoService) Login(email, password string) (string, error) {
 		"id":      paramedico.Id,
 		"email":   paramedico.Email,
 		"isAdmin": paramedico.IsAdmin,
-		"exp":     time.Now().Add(time.Hour * 24).Unix(),
+		"exp":     time.Now().Add(time.Hour * 24).Unix(), //Duracion del token
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

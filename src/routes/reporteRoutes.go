@@ -1,24 +1,27 @@
 package routes
 
 import (
-    "github.com/gin-gonic/gin"
-    "github.com/mateopolci/AmbulanciaYa/src/controllers"
-    "github.com/mateopolci/AmbulanciaYa/src/services"
+	"github.com/gin-gonic/gin"
+	"github.com/mateopolci/AmbulanciaYa/src/controllers"
+	"github.com/mateopolci/AmbulanciaYa/src/middleware"
+	"github.com/mateopolci/AmbulanciaYa/src/services"
 )
 
 func SetupReporteRoutes(router *gin.Engine, service *services.ReporteService) {
     reporteController := controllers.NewReporteController(service)
     
-    accidente := router.Group("/reportes")
+    // Rutas protegidas para paramédicos
+    reporteAuth := router.Group("/reportes")
+    reporteAuth.Use(middleware.AuthMiddleware())
     {
-        accidente.GET("", reporteController.GetReportes)
-        accidente.GET("/:id", reporteController.GetReporte)
-        accidente.GET("/accidente/:accidenteId", reporteController.GetReporteByAccidente)
-        accidente.POST("", reporteController.PostReporte)
-        accidente.POST("/accidente/:accidenteId", reporteController.CreateReporteAndUpdateHospital)
-        accidente.PUT("/:id", reporteController.PutReporte)
-        accidente.PUT("/accidente/:reporteId", reporteController.UpdateReporteAndHospital)
-        accidente.DELETE("/:id", reporteController.DeleteReporte)
-        accidente.DELETE("/accidente/:accidenteId", reporteController.DeleteReporteByAccidente)
+        reporteAuth.GET("", reporteController.GetReportes)
+        reporteAuth.GET("/:id", reporteController.GetReporte)
+        reporteAuth.GET("/accidente/:accidenteId", reporteController.GetReporteByAccidente)
+        reporteAuth.POST("", reporteController.PostReporte)
+        reporteAuth.POST("/accidente/:accidenteId", reporteController.CreateReporteAndUpdateHospital)
+        reporteAuth.PUT("/:id", reporteController.PutReporte)
+        reporteAuth.PUT("/accidente/:reporteId", reporteController.UpdateReporteAndHospital)
+        reporteAuth.DELETE("/:id", reporteController.DeleteReporte)
+        reporteAuth.DELETE("/accidente/:accidenteId", reporteController.DeleteReporteByAccidente)
     }
 }

@@ -1,9 +1,10 @@
 package middleware
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
+	"time"
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -49,6 +50,15 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		// Agregar validación de expiración del token
+		if exp, ok := claims["exp"].(float64); ok {
+			if time.Now().Unix() > int64(exp) {
+				ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Token expired"})
+				ctx.Abort()
+				return
+			}
+		}
+
 		// Establece los claims del token en el contexto
 		ctx.Set("paramedicoId", claims["id"])
 		ctx.Set("isAdmin", claims["isAdmin"])
@@ -58,13 +68,19 @@ func AuthMiddleware() gin.HandlerFunc {
 
 // Middleware para verificar si el usuario es admin
 func IsAdminMiddleware() gin.HandlerFunc {
-	return func (ctx *gin.Context) {
-		isAdmin, _ := ctx.Get("isAdmin")
-		if !isAdmin.(bool) {
-			ctx.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
-			ctx.Abort()
-			return
-		}
-		ctx.Next()
-	}
+    return func(ctx *gin.Context) {
+        isAdmin, exists := ctx.Get("isAdmin") 
+        if !exists {
+            ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Se requiere autenticación"})
+            ctx.Abort()
+            return
+        }
+
+        if !isAdmin.(bool) {
+            ctx.JSON(http.StatusForbidden, gin.H{"error": "Se requieren privilegios de administrador"})
+            ctx.Abort()
+            return
+        }
+        ctx.Next()
+    }
 }

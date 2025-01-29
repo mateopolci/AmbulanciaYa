@@ -1,22 +1,31 @@
 package routes
 
 import (
-    "github.com/gin-gonic/gin"
-    "github.com/mateopolci/AmbulanciaYa/src/controllers"
-    "github.com/mateopolci/AmbulanciaYa/src/services"
+	"github.com/gin-gonic/gin"
+	"github.com/mateopolci/AmbulanciaYa/src/controllers"
+	"github.com/mateopolci/AmbulanciaYa/src/middleware"
+	"github.com/mateopolci/AmbulanciaYa/src/services"
 )
 
 func SetupAccidenteRoutes(router *gin.Engine, service *services.AccidenteService) {
     accidenteController := controllers.NewAccidenteController(service)
     
-    accidente := router.Group("/accidentes")
+    // Rutas protegidas para paramédicos
+    accidenteAuth := router.Group("/accidentes")
+    accidenteAuth.Use(middleware.AuthMiddleware())
     {
-        accidente.GET("", accidenteController.GetAccidentes)
-        accidente.GET("/desc", accidenteController.GetAccidentesDesc)
-        accidente.GET("/:id", accidenteController.GetAccidente)
-        accidente.POST("", accidenteController.PostAccidente)
-        accidente.POST("/enviarambulancia", accidenteController.PostAccidenteAndSendAmbulancia)
-        accidente.PUT("/:id", accidenteController.PutAccidente)
-        accidente.DELETE("/:id", accidenteController.DeleteAccidente)
+        accidenteAuth.GET("", accidenteController.GetAccidentes)
+        accidenteAuth.GET("/desc", accidenteController.GetAccidentesDesc)
+        accidenteAuth.GET("/:id", accidenteController.GetAccidente)
+        accidenteAuth.PUT("/:id", accidenteController.PutAccidente)
+    }
+    
+    // Rutas solo para admin
+    accidenteAdmin := router.Group("/accidentes")
+    accidenteAdmin.Use(middleware.AuthMiddleware(), middleware.IsAdminMiddleware())
+    {
+        accidenteAdmin.POST("", accidenteController.PostAccidente)
+        accidenteAdmin.DELETE("/:id", accidenteController.DeleteAccidente)
+        accidenteAdmin.POST("/enviarambulancia", accidenteController.PostAccidenteAndSendAmbulancia)
     }
 }

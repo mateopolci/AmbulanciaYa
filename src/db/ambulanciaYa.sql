@@ -16,7 +16,7 @@ CREATE TABLE choferes (
 CREATE TABLE paramedicos (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     nombreCompleto VARCHAR(255) NOT NULL,
-    dni VARCHAR(20) NOT NULL,
+    dni VARCHAR(60) NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(20) NOT NULL,
     isAdmin BOOLEAN NOT NULL
