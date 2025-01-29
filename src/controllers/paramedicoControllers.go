@@ -83,13 +83,11 @@ func (c *ParamedicoController) Login(ctx *gin.Context) {
         return
     }
 
-	token, err := c.service.Login(loginReq.Email, loginReq.Password)
+    response, err := c.service.Login(loginReq.Email, loginReq.Password)
     if err != nil {
         ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Credenciales inválidas"})
         return
     }
 
-    ctx.JSON(http.StatusOK, gin.H{
-        "token": token,
-    })
+    ctx.JSON(http.StatusOK, response)
 }

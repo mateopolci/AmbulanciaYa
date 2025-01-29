@@ -31,8 +31,12 @@ func (p *Paramedico) ParamedicoToDTO() ParamedicoDTO {
 	}
 }
 
-// DTO para el login
 type LoginRequest struct {
 	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required,min=6,max=20"`
+}
+
+type LoginResponse struct {
+    Token   string `json:"token"`
+    IsAdmin bool   `json:"isAdmin"`
 }

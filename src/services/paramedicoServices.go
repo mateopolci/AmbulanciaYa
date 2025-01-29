@@ -95,24 +95,32 @@ func (s *ParamedicoService) Delete(id string) error {
 	return result.Error
 }
 
-func (s *ParamedicoService) Login(email, password string) (string, error) {
-	var paramedico models.Paramedico
-	if err := s.db.Where("email = ?", email).First(&paramedico).Error; err != nil {
-		return "", errors.New("credenciales inválidas")
-	}
+// Login paramedico/admin
+func (s *ParamedicoService) Login(email, password string) (*models.LoginResponse, error) {
+    var paramedico models.Paramedico
+    if err := s.db.Where("email = ?", email).First(&paramedico).Error; err != nil {
+        return nil, errors.New("credenciales inválidas")
+    }
 
-	if err := bcrypt.CompareHashAndPassword([]byte(paramedico.Password), []byte(password)); err != nil {
-		return "", errors.New("credenciales inválidas")
-	}
+    if err := bcrypt.CompareHashAndPassword([]byte(paramedico.Password), []byte(password)); err != nil {
+        return nil, errors.New("credenciales inválidas")
+    }
 
-	claims := jwt.MapClaims{
-		"id":      paramedico.Id,
-		"email":   paramedico.Email,
-		"isAdmin": paramedico.IsAdmin,
-		"exp":     time.Now().Add(time.Hour * 24).Unix(), //Duracion del token
-	}
+    claims := jwt.MapClaims{
+        "id":      paramedico.Id,
+        "email":   paramedico.Email,
+        "isAdmin": paramedico.IsAdmin,
+        "exp":     time.Now().Add(time.Hour * 24).Unix(),
+    }
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+    tokenString, err := token.SignedString([]byte(middleware.GetSecretKey()))
+    if err != nil {
+        return nil, err
+    }
 
-	return token.SignedString([]byte(middleware.GetSecretKey()))
+    return &models.LoginResponse{
+        Token:   tokenString,
+        IsAdmin: paramedico.IsAdmin,
+    }, nil
 }
