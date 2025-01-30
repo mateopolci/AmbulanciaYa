@@ -1,14 +1,17 @@
 package main
 
 import (
-    "log"
-    "os"
-    "github.com/joho/godotenv"
+	"log"
+	"os"
+	"time"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/mateopolci/AmbulanciaYa/src/db"
+	"github.com/mateopolci/AmbulanciaYa/src/middleware"
 	"github.com/mateopolci/AmbulanciaYa/src/routes"
 	"github.com/mateopolci/AmbulanciaYa/src/services"
-	"github.com/mateopolci/AmbulanciaYa/src/middleware"
 )
 
 func initAuth() {
@@ -38,6 +41,15 @@ func main() {
 	ambulanciaService := services.NewAmbulanciaService(database, pacienteService, accidenteService)
 
 	router := gin.Default()
+
+	router.Use(cors.New(cors.Config{
+        AllowOrigins:     []string{"http://localhost:5173"},
+        AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH"},
+        AllowHeaders:     []string{"Origin", "Content-Type"},
+        AllowCredentials: true,
+        MaxAge:           12 * time.Hour,
+    }))
+
 	router.Use(middleware.SetupCORS())
 
 	routes.SetupAccidenteRoutes(router, accidenteService)
