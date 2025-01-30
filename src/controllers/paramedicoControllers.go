@@ -95,7 +95,7 @@ func (c *ParamedicoController) Login(ctx *gin.Context) {
         response.Token,            // value
         3600 * 24,                // maxAge (24 hours)
         "/",                      // path
-        "",                      // domain
+        "localhost",                      // domain
         true,                    // secure
         true,                    // httpOnly
     )
@@ -110,7 +110,7 @@ func (c *ParamedicoController) Logout(ctx *gin.Context) {
         "",     // value
         -1,     // maxAge (negative value to delete cookie)
         "/",    // path
-        "",     // domain
+        "localhost",     // domain
         true,   // secure
         true,   // httpOnly
     )
