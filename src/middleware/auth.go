@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"net/http"
-	"strings"
 	"time"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -20,50 +19,42 @@ func GetSecretKey() string {
 }
 
 func AuthMiddleware() gin.HandlerFunc {
-	return func (ctx *gin.Context) {
-		// Obtiene el encabezado de autorización
-		authHeader := strings.TrimSpace(ctx.GetHeader("Authorization"))
-		if authHeader == "" {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is required"})
-			ctx.Abort()
-			return
-		}
+    return func(ctx *gin.Context) {
+        // Get token from cookie instead of header
+        tokenString, err := ctx.Cookie("jwt")
+        if err != nil {
+            ctx.JSON(http.StatusUnauthorized, gin.H{"error": "No authentication cookie found"})
+            ctx.Abort()
+            return
+        }
 
-		// Divide el encabezado en el Bearer y el Token
-		parts := strings.Split(authHeader, " ")
-		if len(parts) != 2 || parts[0] != "Bearer" {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authorization format"})
-			ctx.Abort()
-			return
-		}
+        // Verify and decode JWT token
+        claims := jwt.MapClaims{}
+        token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+            return []byte(secretKey), nil
+        })
 
-		// Verifica y decodifica el token JWT
-		claims := jwt.MapClaims{}
-		token, err := jwt.ParseWithClaims(parts[1], claims, func(token *jwt.Token) (interface{}, error) {
-			return []byte(secretKey), nil
-		})
+        // Validate token
+        if err != nil || !token.Valid {
+            ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+            ctx.Abort()
+            return
+        }
 
-		// Valida el token
-		if err != nil || !token.Valid {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
-			ctx.Abort()
-			return
-		}
+        // Check token expiration
+        if exp, ok := claims["exp"].(float64); ok {
+            if time.Now().Unix() > int64(exp) {
+                ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Token expired"})
+                ctx.Abort()
+                return
+            }
+        }
 
-		// Agregar validación de expiración del token
-		if exp, ok := claims["exp"].(float64); ok {
-			if time.Now().Unix() > int64(exp) {
-				ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Token expired"})
-				ctx.Abort()
-				return
-			}
-		}
-
-		// Establece los claims del token en el contexto
-		ctx.Set("paramedicoId", claims["id"])
-		ctx.Set("isAdmin", claims["isAdmin"])
-		ctx.Next()
-	}
+        // Set claims in context
+        ctx.Set("paramedicoId", claims["id"])
+        ctx.Set("isAdmin", claims["isAdmin"])
+        ctx.Next()
+    }
 }
 
 // Middleware para verificar si el usuario es admin

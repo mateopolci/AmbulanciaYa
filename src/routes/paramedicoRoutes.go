@@ -12,6 +12,7 @@ func SetupParamedicoRoutes(router *gin.Engine, service *services.ParamedicoServi
 
     // Ruta pública de login
     router.POST("/login", ParamedicoController.Login)
+    router.POST("/logout", ParamedicoController.Logout)
 
     // Rutas protegidas
     paramedico := router.Group("/paramedicos")

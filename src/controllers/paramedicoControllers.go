@@ -89,5 +89,30 @@ func (c *ParamedicoController) Login(ctx *gin.Context) {
         return
     }
 
-    ctx.JSON(http.StatusOK, response)
+    // Set HTTP-only cookie
+    ctx.SetCookie(
+        "jwt",                     // name
+        response.Token,            // value
+        3600 * 24,                // maxAge (24 hours)
+        "/",                      // path
+        "",                      // domain
+        true,                    // secure
+        true,                    // httpOnly
+    )
+
+    // Only return isAdmin status
+    ctx.JSON(http.StatusOK, gin.H{"isAdmin": response.IsAdmin})
+}
+
+func (c *ParamedicoController) Logout(ctx *gin.Context) {
+    ctx.SetCookie(
+        "jwt",  // name
+        "",     // value
+        -1,     // maxAge (negative value to delete cookie)
+        "/",    // path
+        "",     // domain
+        true,   // secure
+        true,   // httpOnly
+    )
+    ctx.JSON(http.StatusOK, gin.H{"message": "Logout successful"})
 }
