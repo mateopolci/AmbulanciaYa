@@ -50,8 +50,6 @@ func main() {
         MaxAge:           12 * time.Hour,
     }))
 
-	router.Use(middleware.SetupCORS())
-
 	routes.SetupAccidenteRoutes(router, accidenteService)
 	routes.SetupHospitalRoutes(router, hospitalService)
 	routes.SetupPacienteRoutes(router, pacienteService)
