@@ -76,43 +76,43 @@ func (c *ParamedicoController) DeleteParamedico(ctx *gin.Context) {
 }
 
 func (c *ParamedicoController) Login(ctx *gin.Context) {
-    var loginReq models.LoginRequest
-    
-    if err := ctx.ShouldBindJSON(&loginReq); err != nil {
-        ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
+	var loginReq models.LoginRequest
 
-    response, err := c.service.Login(loginReq.Email, loginReq.Password)
-    if err != nil {
-        ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Credenciales inválidas"})
-        return
-    }
+	if err := ctx.ShouldBindJSON(&loginReq); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-    // Set HTTP-only cookie
-    ctx.SetCookie(
-        "jwt",                     // name
-        response.Token,            // value
-        3600 * 24,                // maxAge (24 hours)
-        "/",                      // path
-        "localhost",                      // domain
-        true,                    // secure
-        true,                    // httpOnly
-    )
+	response, err := c.service.Login(loginReq.Email, loginReq.Password)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Credenciales inválidas"})
+		return
+	}
 
-    // Only return isAdmin status
-    ctx.JSON(http.StatusOK, gin.H{"isAdmin": response.IsAdmin})
+	// Set HTTP-only cookie
+	ctx.SetCookie(
+		"jwt",                       // name
+		response.Token,              // value
+		3600*24,                     // maxAge (24 hours)
+		"/",                         // path
+		"ambulanciaya.onrender.com", // domain
+		true,                        // secure
+		true,                        // httpOnly
+	)
+
+	// Only return isAdmin status
+	ctx.JSON(http.StatusOK, gin.H{"isAdmin": response.IsAdmin})
 }
 
 func (c *ParamedicoController) Logout(ctx *gin.Context) {
-    ctx.SetCookie(
-        "jwt",  // name
-        "",     // value
-        -1,     // maxAge (negative value to delete cookie)
-        "/",    // path
-        "localhost",     // domain
-        true,   // secure
-        true,   // httpOnly
-    )
-    ctx.JSON(http.StatusOK, gin.H{"message": "Logout successful"})
+	ctx.SetCookie(
+		"jwt",                       // name
+		"",                          // value
+		-1,                          // maxAge (negative value to delete cookie)
+		"/",                         // path
+		"ambulanciaya.onrender.com", // domain
+		true,                        // secure
+		true,                        // httpOnly
+	)
+	ctx.JSON(http.StatusOK, gin.H{"message": "Logout successful"})
 }
