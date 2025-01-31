@@ -42,15 +42,26 @@ func main() {
 
 	router := gin.Default()
 
-    router.Use(cors.New(cors.Config{
-        AllowOrigins:     []string{"*"},
-        AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
-        AllowHeaders:     []string{"*"},
-        ExposeHeaders:    []string{"Content-Length", "Content-Type"},
-        AllowCredentials: true,
-        MaxAge:           12 * time.Hour,
-    }))
-
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{
+			"http://localhost:5173",
+			"https://ambulanciaya.onrender.com",
+		},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
+		AllowHeaders:     []string{
+			"Origin",
+			"Content-Type",
+			"Accept",
+			"Authorization",
+			"X-Requested-With",
+			"credentials",
+			"Access-Control-Allow-Credentials",
+		},
+		ExposeHeaders:    []string{"Content-Length", "Content-Type"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
+	
 	routes.SetupAccidenteRoutes(router, accidenteService)
 	routes.SetupHospitalRoutes(router, hospitalService)
 	routes.SetupPacienteRoutes(router, pacienteService)
