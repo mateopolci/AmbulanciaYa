@@ -124,3 +124,32 @@ func (s *ParamedicoService) Login(email, password string) (*models.LoginResponse
         IsAdmin: paramedico.IsAdmin,
     }, nil
 }
+
+func (s *ParamedicoService) UpdateEmail(paramedicoId string, newEmail string) error {
+    result := s.db.Model(&models.Paramedico{}).
+        Where("id = ?", paramedicoId).
+        Update("email", newEmail)
+    return result.Error
+}
+
+func (s *ParamedicoService) UpdatePassword(paramedicoId string, currentPassword string, newPassword string) error {
+    // Primero verificar la contraseña actual
+    var paramedico models.Paramedico
+    if err := s.db.First(&paramedico, "id = ?", paramedicoId).Error; err != nil {
+        return err
+    }
+
+    if err := bcrypt.CompareHashAndPassword([]byte(paramedico.Password), []byte(currentPassword)); err != nil {
+        return errors.New("contraseña actual incorrecta")
+    }
+
+    // Hashear la nueva contraseña
+    hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+    if err != nil {
+        return err
+    }
+
+    // Actualizar la contraseña
+    result := s.db.Model(&paramedico).Update("password", string(hashedPassword))
+    return result.Error
+}

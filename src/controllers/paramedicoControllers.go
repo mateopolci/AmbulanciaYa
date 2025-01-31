@@ -100,7 +100,6 @@ func (c *ParamedicoController) Login(ctx *gin.Context) {
         true,           
     )
 
-	// Only return isAdmin status
 	ctx.JSON(http.StatusOK, gin.H{"isAdmin": response.IsAdmin})
 }
 
@@ -116,4 +115,51 @@ func (c *ParamedicoController) Logout(ctx *gin.Context) {
         true,
     )
 	ctx.JSON(http.StatusOK, gin.H{"message": "Logout successful"})
+}
+
+func (c *ParamedicoController) UpdateEmail(ctx *gin.Context) {
+    // Obtener el ID del paramedico del contexto (establecido por el middleware)
+    paramedicoId, exists := ctx.Get("paramedicoId")
+    if !exists {
+        ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Usuario no autenticado"})
+        return
+    }
+
+    var updateEmailDTO models.UpdateEmailDTO
+    if err := ctx.ShouldBindJSON(&updateEmailDTO); err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    if err := c.service.UpdateEmail(paramedicoId.(string), updateEmailDTO.NewEmail); err != nil {
+        ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+    ctx.JSON(http.StatusOK, gin.H{"message": "Email actualizado exitosamente"})
+}
+
+func (c *ParamedicoController) UpdatePassword(ctx *gin.Context) {
+    paramedicoId, exists := ctx.Get("paramedicoId")
+    if !exists {
+        ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Usuario no autenticado"})
+        return
+    }
+
+    var updatePasswordDTO models.UpdatePasswordDTO
+    if err := ctx.ShouldBindJSON(&updatePasswordDTO); err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    if err := c.service.UpdatePassword(
+        paramedicoId.(string),
+        updatePasswordDTO.CurrentPassword,
+        updatePasswordDTO.NewPassword,
+    ); err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    ctx.JSON(http.StatusOK, gin.H{"message": "Contraseña actualizada exitosamente"})
 }

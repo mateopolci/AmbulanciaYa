@@ -40,3 +40,12 @@ type LoginResponse struct {
     Token   string `json:"token"`
     IsAdmin bool   `json:"isAdmin"`
 }
+
+type UpdateEmailDTO struct {
+    NewEmail string `json:"newEmail" binding:"required,email"`
+}
+
+type UpdatePasswordDTO struct {
+    CurrentPassword string `json:"currentPassword" binding:"required"`
+    NewPassword     string `json:"newPassword" binding:"required,min=6,max=20"`
+}

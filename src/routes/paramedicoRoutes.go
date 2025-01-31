@@ -14,14 +14,22 @@ func SetupParamedicoRoutes(router *gin.Engine, service *services.ParamedicoServi
     router.POST("/login", ParamedicoController.Login)
     router.POST("/logout", ParamedicoController.Logout)
 
-    // Rutas protegidas
-    paramedico := router.Group("/paramedicos")
-    paramedico.Use(middleware.AuthMiddleware(), middleware.IsAdminMiddleware())
+    // Rutas que requieren autenticación pero NO requieren ser admin
+    paramedicoAuth := router.Group("/paramedicos/me")
+    paramedicoAuth.Use(middleware.AuthMiddleware())
     {
-        paramedico.GET("", ParamedicoController.GetParamedicos)
-        paramedico.GET("/:id", ParamedicoController.GetParamedico)
-        paramedico.POST("", ParamedicoController.PostParamedico)
-        paramedico.PUT("/:id", ParamedicoController.PutParamedico)
-        paramedico.DELETE("/:id", ParamedicoController.DeleteParamedico)
+        paramedicoAuth.PATCH("/email", ParamedicoController.UpdateEmail)
+        paramedicoAuth.PATCH("/password", ParamedicoController.UpdatePassword)
+    }
+
+    // Rutas que requieren ser admin
+    paramedicoAdmin := router.Group("/paramedicos")
+    paramedicoAdmin.Use(middleware.AuthMiddleware(), middleware.IsAdminMiddleware())
+    {
+        paramedicoAdmin.GET("", ParamedicoController.GetParamedicos)
+        paramedicoAdmin.GET("/:id", ParamedicoController.GetParamedico)
+        paramedicoAdmin.POST("", ParamedicoController.PostParamedico)
+        paramedicoAdmin.PUT("/:id", ParamedicoController.PutParamedico)
+        paramedicoAdmin.DELETE("/:id", ParamedicoController.DeleteParamedico)
     }
 }
