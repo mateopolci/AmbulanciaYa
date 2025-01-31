@@ -90,29 +90,33 @@ func (c *ParamedicoController) Login(ctx *gin.Context) {
 	}
 
 	// Set HTTP-only cookie
-	ctx.SetCookie(
-		"jwt",                       // name
-		response.Token,              // value
-		3600*24,                     // maxAge (24 hours)
-		"/",                         // path
-		"", // domain
-		true,                        // secure
-		true,                        // httpOnly
-	)
+    cfg := &http.Cookie{
+        Name:     "jwt",
+        Value:    response.Token,
+        MaxAge:   3600 * 24,
+        Path:     "/",
+        Domain:   "",
+        Secure:   true,
+        HttpOnly: true,
+        SameSite: http.SameSiteNoneMode,
+    }
+    http.SetCookie(ctx.Writer, cfg)
 
 	// Only return isAdmin status
 	ctx.JSON(http.StatusOK, gin.H{"isAdmin": response.IsAdmin})
 }
 
 func (c *ParamedicoController) Logout(ctx *gin.Context) {
-	ctx.SetCookie(
-		"jwt",                       // name
-		"",                          // value
-		-1,                          // maxAge (negative value to delete cookie)
-		"/",                         // path
-		"", // domain
-		true,                        // secure
-		true,                        // httpOnly
-	)
+    cfg := &http.Cookie{
+        Name:     "jwt",
+        Value:    "",
+        MaxAge:   -1,
+        Path:     "/",
+        Domain:   "",
+        Secure:   true,
+        HttpOnly: true,
+        SameSite: http.SameSiteNoneMode,
+    }
+    http.SetCookie(ctx.Writer, cfg)
 	ctx.JSON(http.StatusOK, gin.H{"message": "Logout successful"})
 }
