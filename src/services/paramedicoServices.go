@@ -125,10 +125,19 @@ func (s *ParamedicoService) Login(email, password string) (*models.LoginResponse
     }, nil
 }
 
-func (s *ParamedicoService) UpdateEmail(paramedicoId string, newEmail string) error {
-    result := s.db.Model(&models.Paramedico{}).
-        Where("id = ?", paramedicoId).
-        Update("email", newEmail)
+func (s *ParamedicoService) UpdateEmail(paramedicoId string, currentPassword string, newEmail string) error {
+    var paramedico models.Paramedico
+    if err := s.db.First(&paramedico, "id = ?", paramedicoId).Error; err != nil {
+        return err
+    }
+
+    // Verify current password
+    if err := bcrypt.CompareHashAndPassword([]byte(paramedico.Password), []byte(currentPassword)); err != nil {
+        return errors.New("contraseña actual incorrecta")
+    }
+
+    // Update email
+    result := s.db.Model(&paramedico).Update("email", newEmail)
     return result.Error
 }
 

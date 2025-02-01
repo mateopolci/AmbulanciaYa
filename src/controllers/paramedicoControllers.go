@@ -118,7 +118,6 @@ func (c *ParamedicoController) Logout(ctx *gin.Context) {
 }
 
 func (c *ParamedicoController) UpdateEmail(ctx *gin.Context) {
-    // Obtener el ID del paramedico del contexto (establecido por el middleware)
     paramedicoId, exists := ctx.Get("paramedicoId")
     if !exists {
         ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Usuario no autenticado"})
@@ -131,8 +130,12 @@ func (c *ParamedicoController) UpdateEmail(ctx *gin.Context) {
         return
     }
 
-    if err := c.service.UpdateEmail(paramedicoId.(string), updateEmailDTO.NewEmail); err != nil {
-        ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+    if err := c.service.UpdateEmail(
+        paramedicoId.(string),
+        updateEmailDTO.CurrentPassword,
+        updateEmailDTO.NewEmail,
+    ); err != nil {
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
     }
 

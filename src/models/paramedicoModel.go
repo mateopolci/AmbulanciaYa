@@ -42,6 +42,7 @@ type LoginResponse struct {
 }
 
 type UpdateEmailDTO struct {
+    CurrentPassword string `json:"currentPassword" binding:"required"`
     NewEmail string `json:"newEmail" binding:"required,email"`
 }
 
