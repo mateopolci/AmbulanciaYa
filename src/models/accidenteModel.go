@@ -9,7 +9,7 @@ type Accidente struct {
 	Hora         string  `json:"hora" gorm:"type:varchar(8);not null"`
 	AmbulanciaId string  `json:"ambulanciaId" gorm:"column:ambulanciaid;type:uuid;not null"`
 	HospitalId   *string `json:"hospitalId,omitempty" gorm:"column:hospitalid;type:uuid;null"`
-	PacienteId   *string  `json:"pacienteId" gorm:"column:pacienteid;type:uuid;null"`
+	PacienteId   *string `json:"pacienteId" gorm:"column:pacienteid;type:uuid;null"`
 }
 
 // DTO
@@ -21,7 +21,7 @@ type AccidenteDTO struct {
 	Hora         string  `json:"hora"`
 	AmbulanciaId string  `json:"ambulanciaId"`
 	HospitalId   *string `json:"hospitalId,omitempty"`
-	PacienteId   *string  `json:"pacienteId,omitempty"`
+	PacienteId   *string `json:"pacienteId,omitempty"`
 }
 
 // Método DTO de accidente
@@ -40,12 +40,13 @@ func (a *Accidente) AccidenteToDTO() AccidenteDTO {
 
 // DTO para service de descripcion de Accidentes
 type AccidenteDescDTO struct {
-    Id          string  `json:"id"`
-    Direccion   string  `json:"direccion"`
-    Descripcion string  `json:"descripcion"`
-    Fecha       string  `json:"fecha"`
-    Hora        string  `json:"hora"` 
-    Ambulancia  string  `json:"ambulancia"`
-    Hospital    *string `json:"hospital,omitempty"`
-    Paciente    string  `json:"paciente"`
+	Id           string  `json:"id"`
+	Direccion    string  `json:"direccion"`
+	Descripcion  string  `json:"descripcion"`
+	Fecha        string  `json:"fecha"`
+	Hora         string  `json:"hora"`
+	Ambulancia   string  `json:"ambulancia"`
+	Hospital     *string `json:"hospital,omitempty"`
+	Paciente     string  `json:"paciente"`
+	TieneReporte bool    `json:"reporte"`
 }

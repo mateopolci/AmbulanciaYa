@@ -23,6 +23,7 @@ func initAuth() {
     } 
     middleware.SetSecretKey(secretKey)
 }
+
 func main() {
 
 	if os.Getenv("GIN_MODE") == "release" {
@@ -43,9 +44,10 @@ func main() {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{
+		AllowOrigins: []string{
 			"http://localhost:5173",
 			"https://ambulanciaya.onrender.com",
+			"http://localhost:8080",
 		},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
 		AllowHeaders:     []string{
