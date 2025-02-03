@@ -31,9 +31,12 @@ CREATE TABLE ambulancias (
     seguro BOOLEAN NOT NULL,
     choferID UUID NOT NULL,
     paramedicoID UUID NOT NULL,
-    base BOOLEAN NOT NULL,
     FOREIGN KEY (choferID) REFERENCES choferes(id),
     FOREIGN KEY (paramedicoID) REFERENCES paramedicos(id)
+    base BOOLEAN NOT NULL,
+    cadenas BOOLEAN NOT NULL,
+    antinieblas BOOLEAN NOT NULL,
+    cubiertasLluvia BOOLEAN NOT NULL,
 );
 
 -- Create table hospitales

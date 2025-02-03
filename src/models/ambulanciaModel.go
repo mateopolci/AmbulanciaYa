@@ -12,7 +12,7 @@ type Ambulancia struct {
 	Base            bool   `json:"base" gorm:"type:boolean;not null"`
 	Cadenas         bool   `json:"cadenas" gorm:"type:boolean;not null"`
 	Antinieblas     bool   `json:"antinieblas" gorm:"type:boolean;not null"`
-	CubiertasLluvia bool   `json:"cubiertasLluvia" gorm:"type:boolean;not null"`
+	CubiertasLluvia bool   `json:"cubiertasLluvia" gorm:"column:cubiertaslluvia;type:boolean;not null"`
 }
 
 // DTO
