@@ -8,18 +8,18 @@ import (
 )
 
 type AmbulanciaService struct {
-    db *gorm.DB
-    pacienteService *PacienteService
+	db               *gorm.DB
+	pacienteService  *PacienteService
 	accidenteService *AccidenteService
 }
 
 // Constructor del servicio
 func NewAmbulanciaService(db *gorm.DB, pacienteService *PacienteService, accidenteService *AccidenteService) *AmbulanciaService {
-    return &AmbulanciaService{
-        db: db,
-        pacienteService: pacienteService,
-        accidenteService: accidenteService,
-    }
+	return &AmbulanciaService{
+		db:               db,
+		pacienteService:  pacienteService,
+		accidenteService: accidenteService,
+	}
 }
 
 // Obtener todas las ambulancias
@@ -39,36 +39,39 @@ func (s *AmbulanciaService) GetAllAmbulancias() ([]models.AmbulanciaDTO, error) 
 
 // Obtener todas las ambulancias con descripcion
 func (s *AmbulanciaService) GetAllAmbulanciasDesc() ([]models.AmbulanciaDescDTO, error) {
-    var results []struct {
-        models.Ambulancia
-        ChoferNombre     string `gorm:"column:chofer_nombre"`
-        ParamedicoNombre string `gorm:"column:paramedico_nombre"`
-    }
+	var results []struct {
+		models.Ambulancia
+		ChoferNombre     string `gorm:"column:chofer_nombre"`
+		ParamedicoNombre string `gorm:"column:paramedico_nombre"`
+	}
 
-    err := s.db.Table("ambulancias").
-        Select("ambulancias.*, choferes.nombrecompleto as chofer_nombre, paramedicos.nombrecompleto as paramedico_nombre").
-        Joins("LEFT JOIN choferes ON ambulancias.choferid = choferes.id").
-        Joins("LEFT JOIN paramedicos ON ambulancias.paramedicoid = paramedicos.id").
-        Find(&results).Error
+	err := s.db.Table("ambulancias").
+		Select("ambulancias.*, choferes.nombrecompleto as chofer_nombre, paramedicos.nombrecompleto as paramedico_nombre").
+		Joins("LEFT JOIN choferes ON ambulancias.choferid = choferes.id").
+		Joins("LEFT JOIN paramedicos ON ambulancias.paramedicoid = paramedicos.id").
+		Find(&results).Error
 
-    if err != nil {
-        return nil, err
-    }
+	if err != nil {
+		return nil, err
+	}
 
-    ambulanciasDTO := make([]models.AmbulanciaDescDTO, len(results))
-    for i, res := range results {
-        ambulanciasDTO[i] = models.AmbulanciaDescDTO{
-            Id:    res.Id,
-            Patente:    res.Patente,
-            Inventario: res.Inventario,
-            Vtv:        res.Vtv,
-            Seguro:     res.Seguro,
-            Chofer:     res.ChoferNombre,
-            Paramedico: res.ParamedicoNombre,
-            Base:       res.Base,
-        }
-    }
-    return ambulanciasDTO, nil
+	ambulanciasDTO := make([]models.AmbulanciaDescDTO, len(results))
+	for i, res := range results {
+		ambulanciasDTO[i] = models.AmbulanciaDescDTO{
+			Id:              res.Id,
+			Patente:         res.Patente,
+			Inventario:      res.Inventario,
+			Vtv:             res.Vtv,
+			Seguro:          res.Seguro,
+			Chofer:          res.ChoferNombre,
+			Paramedico:      res.ParamedicoNombre,
+			Base:            res.Base,
+			Cadenas:         res.Cadenas,
+			Antinieblas:     res.Antinieblas,
+			CubiertasLluvia: res.CubiertasLluvia,
+		}
+	}
+	return ambulanciasDTO, nil
 }
 
 // Obtener una ambulancia por su ID
@@ -83,30 +86,33 @@ func (s *AmbulanciaService) GetAmbulanciaById(id string) (models.AmbulanciaDTO, 
 
 // Obtener el id de la primera ambulancia disponible
 func (s *AmbulanciaService) GetAmbulanciaDisp() (models.AmbulanciaDTO, error) {
-    var ambulancia models.Ambulancia
-    
-    result := s.db.Where(
-        "inventario = ? AND vtv = ? AND seguro = ? AND base = ?",
-        true, true, true, true,
-    ).First(&ambulancia)
-    
-    if result.Error != nil {
-        return models.AmbulanciaDTO{}, result.Error
-    }
-    
-    return ambulancia.AmbulanciaToDTO(), nil
+	var ambulancia models.Ambulancia
+
+	result := s.db.Where(
+		"inventario = ? AND vtv = ? AND seguro = ? AND base = ?",
+		true, true, true, true,
+	).First(&ambulancia)
+
+	if result.Error != nil {
+		return models.AmbulanciaDTO{}, result.Error
+	}
+
+	return ambulancia.AmbulanciaToDTO(), nil
 }
 
 // Crear una nueva ambulancia
 func (s *AmbulanciaService) CreateAmbulancia(ambulanciaDTO models.AmbulanciaDTO) (models.Ambulancia, error) {
 	ambulancia := models.Ambulancia{
-		Patente:      ambulanciaDTO.Patente,
-		Inventario:   ambulanciaDTO.Inventario,
-		Vtv:          ambulanciaDTO.Vtv,
-		Seguro:       ambulanciaDTO.Seguro,
-		ChoferId:     ambulanciaDTO.ChoferId,
-		ParamedicoId: ambulanciaDTO.ParamedicoId,
-		Base:          ambulanciaDTO.Base,
+		Patente:         ambulanciaDTO.Patente,
+		Inventario:      ambulanciaDTO.Inventario,
+		Vtv:             ambulanciaDTO.Vtv,
+		Seguro:          ambulanciaDTO.Seguro,
+		ChoferId:        ambulanciaDTO.ChoferId,
+		ParamedicoId:    ambulanciaDTO.ParamedicoId,
+		Base:            ambulanciaDTO.Base,
+		Cadenas:         ambulanciaDTO.Cadenas,
+		Antinieblas:     ambulanciaDTO.Antinieblas,
+		CubiertasLluvia: ambulanciaDTO.CubiertasLluvia,
 	}
 
 	result := s.db.Create(&ambulancia)
@@ -127,6 +133,9 @@ func (s *AmbulanciaService) UpdateAmbulancia(id string, ambulanciaDTO models.Amb
 	ambulancia.ChoferId = ambulanciaDTO.ChoferId
 	ambulancia.ParamedicoId = ambulanciaDTO.ParamedicoId
 	ambulancia.Base = ambulanciaDTO.Base
+	ambulancia.Cadenas = ambulanciaDTO.Cadenas
+	ambulancia.Antinieblas = ambulanciaDTO.Antinieblas
+	ambulancia.CubiertasLluvia = ambulanciaDTO.CubiertasLluvia
 
 	result := s.db.Save(&ambulancia)
 	return ambulancia, result.Error
@@ -138,67 +147,67 @@ func (s *AmbulanciaService) DeleteAmbulancia(id string) error {
 	return result.Error
 }
 
-// Pedido de ambulancia 
+// Pedido de ambulancia
 func (s *AmbulanciaService) PedidoAmbulancia(pedido models.AmbulanciaPedidoDTO) (string, error) {
-    // Recuperar ambulancia disponible
-    var ambulanciaDisp models.AmbulanciaDTO
-    var err error
-    maxIntentos := 7
+	// Recuperar ambulancia disponible
+	var ambulanciaDisp models.AmbulanciaDTO
+	var err error
+	maxIntentos := 7
 
-    for intento := 0; intento < maxIntentos; intento++ {
-        ambulanciaDisp, err = s.GetAmbulanciaDisp()
-        if err == nil && ambulanciaDisp.Id != "" {
-            break
-        }
-        if intento < maxIntentos-1 {
-            time.Sleep(10 * time.Second)
-        }
-    }
+	for intento := 0; intento < maxIntentos; intento++ {
+		ambulanciaDisp, err = s.GetAmbulanciaDisp()
+		if err == nil && ambulanciaDisp.Id != "" {
+			break
+		}
+		if intento < maxIntentos-1 {
+			time.Sleep(10 * time.Second)
+		}
+	}
 
-    if err != nil || ambulanciaDisp.Id == "" {
-        return "No se encuentran ambulancias disponibles", err
-    }
-    idAmbulanciaEncontrada := ambulanciaDisp.Id
+	if err != nil || ambulanciaDisp.Id == "" {
+		return "No se encuentran ambulancias disponibles", err
+	}
+	idAmbulanciaEncontrada := ambulanciaDisp.Id
 
-    // Inicializar pacienteId como nil
-    var pacienteId *string
+	// Inicializar pacienteId como nil
+	var pacienteId *string
 
-    // Solo procesar paciente si se proporcionan nombre y teléfono
-    if pedido.Nombre != "" && pedido.Telefono != "" {
-        paciente, err := s.pacienteService.GetByTelefono(pedido.Telefono)
-        if err != nil || paciente.Id == "" {
-            nuevoPaciente, err := s.pacienteService.Create(models.PacienteDTO{
-                NombreCompleto: pedido.Nombre,
-                Telefono:      pedido.Telefono,
-            })
-            if err != nil {
-                return "Error al crear paciente", err
-            }
-            pacienteId = &nuevoPaciente.Id
-        } else {
-            pacienteId = &paciente.Id
-        }
-    }
+	// Solo procesar paciente si se proporcionan nombre y teléfono
+	if pedido.Nombre != "" && pedido.Telefono != "" {
+		paciente, err := s.pacienteService.GetByTelefono(pedido.Telefono)
+		if err != nil || paciente.Id == "" {
+			nuevoPaciente, err := s.pacienteService.Create(models.PacienteDTO{
+				NombreCompleto: pedido.Nombre,
+				Telefono:       pedido.Telefono,
+			})
+			if err != nil {
+				return "Error al crear paciente", err
+			}
+			pacienteId = &nuevoPaciente.Id
+		} else {
+			pacienteId = &paciente.Id
+		}
+	}
 
-    // Crear accidente y enviar ambulancia
-    loc, err := time.LoadLocation("America/Argentina/Buenos_Aires")
-    if err != nil {
-        return "Error al configurar zona horaria", err
-    }
-    now := time.Now().In(loc)
-    accidente := models.AccidenteDTO{
-        Direccion:    pedido.Direccion,
-        Descripcion:  pedido.Descripcion,
-        Fecha:        now.Format("2006-01-02"),
-        Hora:         now.Format("15:04"),
-        AmbulanciaId: idAmbulanciaEncontrada,
-        PacienteId:   pacienteId,
-    }
+	// Crear accidente y enviar ambulancia
+	loc, err := time.LoadLocation("America/Argentina/Buenos_Aires")
+	if err != nil {
+		return "Error al configurar zona horaria", err
+	}
+	now := time.Now().In(loc)
+	accidente := models.AccidenteDTO{
+		Direccion:    pedido.Direccion,
+		Descripcion:  pedido.Descripcion,
+		Fecha:        now.Format("2006-01-02"),
+		Hora:         now.Format("15:04"),
+		AmbulanciaId: idAmbulanciaEncontrada,
+		PacienteId:   pacienteId,
+	}
 
-    _, err = s.accidenteService.CreateAccidenteAndSendAmbulancia(accidente)
-    if err != nil {
-        return "Error al registrar el accidente", err
-    }
+	_, err = s.accidenteService.CreateAccidenteAndSendAmbulancia(accidente)
+	if err != nil {
+		return "Error al registrar el accidente", err
+	}
 
-    return "La ambulancia ha sido enviada", nil
+	return "La ambulancia ha sido enviada", nil
 }
