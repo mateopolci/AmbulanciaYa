@@ -105,11 +105,11 @@ func (s *AmbulanciaService) GetAmbulanciaDisp(descripcion string) (models.Ambula
 		if datos.Nieve >= 30 {
 			query = query.Where("cadenas = ?", true)
 		}
-		if datos.Visibilidad <= 50 {
-			query = query.Where("antinieblas = ?", true)
-		}
 		if datos.Lluvia >= 40 {
 			query = query.Where("cubiertaslluvia = ?", true)
+		}
+		if datos.Visibilidad <= 50 {
+			query = query.Where("antinieblas = ?", true)
 		}
 
 		result := query.First(&ambulancia)
