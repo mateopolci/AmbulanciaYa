@@ -1,12 +1,17 @@
-package services
+package main
 
-import(
+import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"github.com/mateopolci/AmbulanciaYa/src/models"
 )
 
-// Simulacion de servicio de Los Pinos
+func main(){
+	data := GetDatosLosPinos()
+	fmt.Println(data)
+}
+
 func GetDatosLosPinos() models.DatosLosPinos {
 	file, err := os.Open("src/utils/jsons/LosPinos.json")
 	if err != nil {
