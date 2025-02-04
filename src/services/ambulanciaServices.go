@@ -85,8 +85,39 @@ func (s *AmbulanciaService) GetAmbulanciaById(id string) (models.AmbulanciaDTO, 
 }
 
 // Obtener el id de la primera ambulancia disponible
-func (s *AmbulanciaService) GetAmbulanciaDisp() (models.AmbulanciaDTO, error) {
+func (s *AmbulanciaService) GetAmbulanciaDisp(descripcion string) (models.AmbulanciaDTO, error) {
+
 	var ambulancia models.Ambulancia
+
+	if descripcion == "Veloway" {
+		// TODO: Validación de ambulancia para "Veloway"
+	}
+
+	if descripcion == "Los Pinos" {
+		// Validación de ambulancia para "Los Pinos"
+		datos := GetDatosLosPinos()
+
+		query := s.db
+
+		query = query.Where("inventario = ? AND vtv = ? AND seguro = ? AND base = ?",
+			true, true, true, true)
+
+		if datos.Nieve >= 30 {
+			query = query.Where("cadenas = ?", true)
+		}
+		if datos.Visibilidad <= 50 {
+			query = query.Where("antinieblas = ?", true)
+		}
+		if datos.Lluvia >= 40 {
+			query = query.Where("cubiertaslluvia = ?", true)
+		}
+
+		result := query.First(&ambulancia)
+		if result.Error != nil {
+			return models.AmbulanciaDTO{}, result.Error
+		}
+		return ambulancia.AmbulanciaToDTO(), nil
+	}
 
 	result := s.db.Where(
 		"inventario = ? AND vtv = ? AND seguro = ? AND base = ?",
@@ -155,7 +186,7 @@ func (s *AmbulanciaService) PedidoAmbulancia(pedido models.AmbulanciaPedidoDTO) 
 	maxIntentos := 7
 
 	for intento := 0; intento < maxIntentos; intento++ {
-		ambulanciaDisp, err = s.GetAmbulanciaDisp()
+		ambulanciaDisp, err = s.GetAmbulanciaDisp(pedido.Descripcion)
 		if err == nil && ambulanciaDisp.Id != "" {
 			break
 		}
