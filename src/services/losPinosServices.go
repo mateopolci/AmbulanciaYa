@@ -1,26 +1,35 @@
 package services
 
-import(
-	"encoding/json"
+import (
+    "encoding/json"
+    "net/http"
 	"os"
-	"github.com/mateopolci/AmbulanciaYa/src/models"
+    "github.com/mateopolci/AmbulanciaYa/src/models"
 )
 
-// Simulacion de servicio de Los Pinos
+// Servicio de Los Pinos
 func GetDatosLosPinos() models.DatosLosPinos {
-	file, err := os.Open("src/utils/jsons/LosPinos.json")
-	if err != nil {
+	apiURL := os.Getenv("LOS_PINOS_API_URL")
+	resp, err := http.Get(apiURL)
+    if err != nil {
         return models.DatosLosPinos{
-            Msg: "Error loading Los Pinos JSON data",
+            Msg: "Error al conectarse con el servicio de Los Pinos",
         }
     }
-	defer file.Close()
-	decoder := json.NewDecoder(file)
-	data := models.DatosLosPinos{}
-    if err := decoder.Decode(&data); err != nil {
+    defer resp.Body.Close()
+
+    if resp.StatusCode != http.StatusOK {
         return models.DatosLosPinos{
-            Msg: "Error parsing weather data",
+            Msg: "Error: No se pudo obtener los datos de Los Pinos",
         }
     }
-	return data
+
+    var data models.DatosLosPinos
+    if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+        return models.DatosLosPinos{
+            Msg: "Error parsing weather data from Los Pinos",
+        }
+    }
+
+    return data
 }
