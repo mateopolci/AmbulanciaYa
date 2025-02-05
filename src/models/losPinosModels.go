@@ -1,13 +1,13 @@
 package models
 
 type DatosLosPinos struct {
-	Nieve float32 `json:"nieve"`
-    Lluvia float32 `json:"lluvia"`
-    Visibilidad float32 `json:"visibilidad"`
-    NubesBajas float32 `json:"nubesBajas"`
-    NubesMedias float32 `json:"nubesMedias"`
-    NubesAltas float32 `json:"nubesAltas"`
-    NubesTotales float32 `json:"nubesTotales"`
-    Precipitacion float32 `json:"precipitacion"`
+	Nieve int16 `json:"nieve"`
+    Lluvia int16 `json:"lluvia"`
+    Visibilidad int16 `json:"visibilidad"`
+    NubesBajas int16 `json:"nubesBajas"`
+    NubesMedias int16 `json:"nubesMedias"`
+    NubesAltas int16 `json:"nubesAltas"`
+    NubesTotales int16 `json:"nubesTotales"`
+    Precipitacion int16 `json:"precipitacion"`
     Msg string `json:"msg"`
 }
