@@ -29,6 +29,27 @@ func (s *ChoferService) GetAll() ([]models.ChoferDTO, error) {
 	return choferesDTO, nil
 }
 
+// GetAll obtiene todos los choferes que no estan asociados a una ambulancia
+func (s *ChoferService) GetAllDisp() ([]models.ChoferDTO, error) {
+    var choferes []models.Chofer
+    
+    // Usamos un left join con ambulancias y filtramos donde no hay coincidencia (chofer sin ambulancia)
+    result := s.db.
+        Joins("LEFT JOIN ambulancias ON ambulancias.choferid = choferes.id").
+        Where("ambulancias.id IS NULL").
+        Find(&choferes)
+    
+    if result.Error != nil {
+        return nil, result.Error
+    }
+
+    choferesDTO := make([]models.ChoferDTO, len(choferes))
+    for i, chof := range choferes {
+        choferesDTO[i] = chof.ChoferToDTO()
+    }
+    return choferesDTO, nil
+}
+
 // GetById obtiene un choferes por su ID
 func (s *ChoferService) GetById(id string) (models.ChoferDTO, error) {
 	var chofer models.Chofer

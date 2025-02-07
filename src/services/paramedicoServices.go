@@ -35,6 +35,25 @@ func (s *ParamedicoService) GetAll() ([]models.ParamedicoDTO, error) {
 	return paramedicosDTO, nil
 }
 
+// GetAll obtiene todos los paramedicos que no esten asociados a una ambulancia
+func (s *ParamedicoService) GetAllDisp() ([]models.ParamedicoDTO, error) {
+	var paramedicos []models.Paramedico
+	result := s.db.
+		Joins("LEFT JOIN ambulancias ON ambulancias.paramedicoid = paramedicos.id").
+		Where("ambulancias.id IS NULL").
+		Find(&paramedicos)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	paramedicosDTO := make([]models.ParamedicoDTO, len(paramedicos))
+	for i, param := range paramedicos {
+		paramedicosDTO[i] = param.ParamedicoToDTO()
+	}
+	return paramedicosDTO, nil
+}
+
 // GetById obtiene un paramedico por su ID
 func (s *ParamedicoService) GetById(id string) (models.ParamedicoDTO, error) {
 	var paramedico models.Paramedico
@@ -84,7 +103,7 @@ func (s *ParamedicoService) Update(id string, paramedicoDTO models.ParamedicoDTO
 		}
 		paramedico.Password = string(hashedPassword)
 	}
-	
+
 	result := s.db.Save(&paramedico)
 	return paramedico, result.Error
 }
@@ -97,68 +116,68 @@ func (s *ParamedicoService) Delete(id string) error {
 
 // Login paramedico/admin
 func (s *ParamedicoService) Login(email, password string) (*models.LoginResponse, error) {
-    var paramedico models.Paramedico
-    if err := s.db.Where("email = ?", email).First(&paramedico).Error; err != nil {
-        return nil, errors.New("credenciales inválidas")
-    }
+	var paramedico models.Paramedico
+	if err := s.db.Where("email = ?", email).First(&paramedico).Error; err != nil {
+		return nil, errors.New("credenciales inválidas")
+	}
 
-    if err := bcrypt.CompareHashAndPassword([]byte(paramedico.Password), []byte(password)); err != nil {
-        return nil, errors.New("credenciales inválidas")
-    }
+	if err := bcrypt.CompareHashAndPassword([]byte(paramedico.Password), []byte(password)); err != nil {
+		return nil, errors.New("credenciales inválidas")
+	}
 
-    claims := jwt.MapClaims{
-        "id":      paramedico.Id,
-        "email":   paramedico.Email,
-        "isAdmin": paramedico.IsAdmin,
-        "exp":     time.Now().Add(time.Hour * 24).Unix(),
-    }
+	claims := jwt.MapClaims{
+		"id":      paramedico.Id,
+		"email":   paramedico.Email,
+		"isAdmin": paramedico.IsAdmin,
+		"exp":     time.Now().Add(time.Hour * 24).Unix(),
+	}
 
-    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-    tokenString, err := token.SignedString([]byte(middleware.GetSecretKey()))
-    if err != nil {
-        return nil, err
-    }
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte(middleware.GetSecretKey()))
+	if err != nil {
+		return nil, err
+	}
 
-    return &models.LoginResponse{
-        Token:   tokenString,
-        IsAdmin: paramedico.IsAdmin,
-    }, nil
+	return &models.LoginResponse{
+		Token:   tokenString,
+		IsAdmin: paramedico.IsAdmin,
+	}, nil
 }
 
 func (s *ParamedicoService) UpdateEmail(paramedicoId string, currentPassword string, newEmail string) error {
-    var paramedico models.Paramedico
-    if err := s.db.First(&paramedico, "id = ?", paramedicoId).Error; err != nil {
-        return err
-    }
+	var paramedico models.Paramedico
+	if err := s.db.First(&paramedico, "id = ?", paramedicoId).Error; err != nil {
+		return err
+	}
 
-    // Verify current password
-    if err := bcrypt.CompareHashAndPassword([]byte(paramedico.Password), []byte(currentPassword)); err != nil {
-        return errors.New("contraseña actual incorrecta")
-    }
+	// Verify current password
+	if err := bcrypt.CompareHashAndPassword([]byte(paramedico.Password), []byte(currentPassword)); err != nil {
+		return errors.New("contraseña actual incorrecta")
+	}
 
-    // Update email
-    result := s.db.Model(&paramedico).Update("email", newEmail)
-    return result.Error
+	// Update email
+	result := s.db.Model(&paramedico).Update("email", newEmail)
+	return result.Error
 }
 
 func (s *ParamedicoService) UpdatePassword(paramedicoId string, currentPassword string, newPassword string) error {
-    // Primero verificar la contraseña actual
-    var paramedico models.Paramedico
-    if err := s.db.First(&paramedico, "id = ?", paramedicoId).Error; err != nil {
-        return err
-    }
+	// Primero verificar la contraseña actual
+	var paramedico models.Paramedico
+	if err := s.db.First(&paramedico, "id = ?", paramedicoId).Error; err != nil {
+		return err
+	}
 
-    if err := bcrypt.CompareHashAndPassword([]byte(paramedico.Password), []byte(currentPassword)); err != nil {
-        return errors.New("contraseña actual incorrecta")
-    }
+	if err := bcrypt.CompareHashAndPassword([]byte(paramedico.Password), []byte(currentPassword)); err != nil {
+		return errors.New("contraseña actual incorrecta")
+	}
 
-    // Hashear la nueva contraseña
-    hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
-    if err != nil {
-        return err
-    }
+	// Hashear la nueva contraseña
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
 
-    // Actualizar la contraseña
-    result := s.db.Model(&paramedico).Update("password", string(hashedPassword))
-    return result.Error
+	// Actualizar la contraseña
+	result := s.db.Model(&paramedico).Update("password", string(hashedPassword))
+	return result.Error
 }

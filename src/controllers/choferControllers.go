@@ -25,6 +25,15 @@ func (c *ChoferController) GetChoferes(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, choferDTO)
 }
 
+func (c *ChoferController) GetChoferesDisp(ctx *gin.Context) {
+	choferDTO, err := c.service.GetAllDisp()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, choferDTO)
+}
+
 func (c *ChoferController) GetChofer(ctx *gin.Context) {
 	id := ctx.Param("id")
 	choferDTO, err := c.service.GetById(id)

@@ -27,6 +27,7 @@ func SetupParamedicoRoutes(router *gin.Engine, service *services.ParamedicoServi
     paramedicoAdmin.Use(middleware.AuthMiddleware(), middleware.IsAdminMiddleware())
     {
         paramedicoAdmin.GET("", ParamedicoController.GetParamedicos)
+        paramedicoAdmin.GET("", ParamedicoController.GetParamedicosDisp)
         paramedicoAdmin.GET("/:id", ParamedicoController.GetParamedico)
         paramedicoAdmin.POST("", ParamedicoController.PostParamedico)
         paramedicoAdmin.PUT("/:id", ParamedicoController.PutParamedico)

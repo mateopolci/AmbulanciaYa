@@ -25,6 +25,15 @@ func (c *ParamedicoController) GetParamedicos(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, paramedicoDTO)
 }
 
+func (c *ParamedicoController) GetParamedicosDisp(ctx *gin.Context) {
+	paramedicoDTO, err := c.service.GetAllDisp()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, paramedicoDTO)
+}
+
 func (c *ParamedicoController) GetParamedico(ctx *gin.Context) {
 	id := ctx.Param("id")
 	paramedicoDTO, err := c.service.GetById(id)

@@ -16,6 +16,7 @@ func SetupChoferRoutes(router *gin.Engine, service *services.ChoferService) {
 
 	{
 		chofer.GET("", ChoferController.GetChoferes)
+		chofer.GET("/disp", ChoferController.GetChoferesDisp)
 		chofer.GET("/:id", ChoferController.GetChofer)
 		chofer.POST("", ChoferController.PostChofer)
 		chofer.PUT("/:id", ChoferController.PutChofer)
