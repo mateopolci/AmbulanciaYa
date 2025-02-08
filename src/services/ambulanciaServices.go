@@ -89,8 +89,25 @@ func (s *AmbulanciaService) GetAmbulanciaDisp(descripcion string) (models.Ambula
 
 	var ambulancia models.Ambulancia
 
+	// Validación de ambulancia para  "Veloway"
 	if descripcion == "Veloway" {
-		// TODO: Validación de ambulancia para "Veloway"
+
+		datos := GetDatosVeloway()
+
+		query:= s.db
+
+		query = query.Where("inventario = ? AND vtv = ? AND seguro = ? AND base = ?",
+		true, true, true, true)
+
+		if datos.EnfermedadCardiaca != nil || datos.EnfermedadRespiratoria != nil || datos.Alergias != nil {
+			query = query.Where("inventario = ?", true)
+		}
+
+		result := query.First(&ambulancia)
+		if result.Error != nil {
+			return models.AmbulanciaDTO{}, result.Error
+		}
+		return ambulancia.AmbulanciaToDTO(), nil
 	}
 
 	if descripcion == "Los Pinos" {
