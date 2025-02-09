@@ -48,6 +48,7 @@ func main() {
 			"http://localhost:5173",
 			"https://ambulanciaya.onrender.com",
 			"http://localhost:8080",
+			"https://ambulancia-ya.vercel.app/",
 		},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
 		AllowHeaders:     []string{
