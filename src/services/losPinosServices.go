@@ -27,7 +27,7 @@ func GetDatosLosPinos() models.DatosLosPinos {
     var data models.DatosLosPinos
     if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
         return models.DatosLosPinos{
-            Msg: "Error parsing weather data from Los Pinos",
+            Msg: "Error en el parseo de la data del servicio de Los Pinos",
         }
     }
 
