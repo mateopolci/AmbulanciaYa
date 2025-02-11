@@ -94,10 +94,10 @@ func (s *AmbulanciaService) GetAmbulanciaDisp(descripcion string) (models.Ambula
 
 		datos := GetDatosVeloway()
 
-		query:= s.db
+		query := s.db
 
 		query = query.Where("vtv = ? AND seguro = ? AND base = ?",
-		true, true, true, true)
+			true, true, true)
 
 		if datos.EnfermedadCardiaca != nil || datos.EnfermedadRespiratoria != nil || datos.Alergias != nil {
 			query = query.Where("inventario = ?", true)
@@ -117,7 +117,7 @@ func (s *AmbulanciaService) GetAmbulanciaDisp(descripcion string) (models.Ambula
 		query := s.db
 
 		query = query.Where("vtv = ? AND seguro = ? AND base = ?",
-			true, true, true, true)
+			true, true, true)
 
 		if datos.Nieve >= 30 {
 			query = query.Where("cadenas = ?", true)
@@ -138,7 +138,7 @@ func (s *AmbulanciaService) GetAmbulanciaDisp(descripcion string) (models.Ambula
 
 	result := s.db.Where(
 		"vtv = ? AND seguro = ? AND base = ?",
-		true, true, true, true,
+		true, true, true,
 	).First(&ambulancia)
 
 	if result.Error != nil {
