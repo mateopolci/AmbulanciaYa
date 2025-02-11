@@ -23,7 +23,7 @@ func (h *Hospital) HospitalToDTO() HospitalDTO {
 	}
 }
 
-//Especificacion del nombre de la bdd
+//Especificacion del nombre de la tabla para GORM
 func (Hospital) TableName() string {
 	return "hospitales"
 }

@@ -96,7 +96,7 @@ func (s *AmbulanciaService) GetAmbulanciaDisp(descripcion string) (models.Ambula
 
 		query:= s.db
 
-		query = query.Where("inventario = ? AND vtv = ? AND seguro = ? AND base = ?",
+		query = query.Where("vtv = ? AND seguro = ? AND base = ?",
 		true, true, true, true)
 
 		if datos.EnfermedadCardiaca != nil || datos.EnfermedadRespiratoria != nil || datos.Alergias != nil {
@@ -110,13 +110,13 @@ func (s *AmbulanciaService) GetAmbulanciaDisp(descripcion string) (models.Ambula
 		return ambulancia.AmbulanciaToDTO(), nil
 	}
 
+	// Validación de ambulancia para "Los Pinos"
 	if descripcion == "Los Pinos" {
-		// Validación de ambulancia para "Los Pinos"
 		datos := GetDatosLosPinos()
 
 		query := s.db
 
-		query = query.Where("inventario = ? AND vtv = ? AND seguro = ? AND base = ?",
+		query = query.Where("vtv = ? AND seguro = ? AND base = ?",
 			true, true, true, true)
 
 		if datos.Nieve >= 30 {
@@ -137,7 +137,7 @@ func (s *AmbulanciaService) GetAmbulanciaDisp(descripcion string) (models.Ambula
 	}
 
 	result := s.db.Where(
-		"inventario = ? AND vtv = ? AND seguro = ? AND base = ?",
+		"vtv = ? AND seguro = ? AND base = ?",
 		true, true, true, true,
 	).First(&ambulancia)
 
@@ -217,7 +217,7 @@ func (s *AmbulanciaService) PedidoAmbulancia(pedido models.AmbulanciaPedidoDTO) 
 	}
 	idAmbulanciaEncontrada := ambulanciaDisp.Id
 
-	// Inicializar pacienteId como nil
+	// Inicializar pacienteId
 	var pacienteId *string
 
 	// Solo procesar paciente si se proporcionan nombre y teléfono

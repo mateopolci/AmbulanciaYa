@@ -23,7 +23,7 @@ func (c *Chofer) ChoferToDTO() ChoferDTO {
 	}
 }
 
-//Especificacion del nombre de la bdd
+//Especificacion del nombre de la tabla para GORM
 func (Chofer) TableName() string {
 	return "choferes"
 }

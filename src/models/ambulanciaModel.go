@@ -47,7 +47,7 @@ func (a *Ambulancia) AmbulanciaToDTO() AmbulanciaDTO {
 	}
 }
 
-//Especificacion del nombre de la bdd
+//Especificacion del nombre de la tabla para GORM
 func (Ambulancia) TableName() string {
 	return "ambulancias"
 }
