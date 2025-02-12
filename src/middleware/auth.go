@@ -29,7 +29,7 @@ func AuthMiddleware() gin.HandlerFunc {
             return
         }
 
-        // Verificar token y obtener claims
+        // Extraer los claims del token
         claims := jwt.MapClaims{}
         token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
             return []byte(secretKey), nil

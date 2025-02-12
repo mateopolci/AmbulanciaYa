@@ -15,24 +15,28 @@ import (
 )
 
 func initAuth() {
-    _ = godotenv.Load()
-    
-    secretKey := os.Getenv("SECRET_KEY")
-    if secretKey == "" {
-        log.Fatal("ERROR: SECRET_KEY is not set")
-    } 
-    middleware.SetSecretKey(secretKey)
+	_ = godotenv.Load()
+
+	secretKey := os.Getenv("SECRET_KEY")
+	if secretKey == "" {
+		log.Fatal("ERROR: SECRET_KEY is not set")
+	}
+	middleware.SetSecretKey(secretKey)
 }
 
 func main() {
 
 	if os.Getenv("GIN_MODE") == "release" {
-        gin.SetMode(gin.ReleaseMode)
-    }
+		gin.SetMode(gin.ReleaseMode) // Mejora de rendimiento y menos logs de debug
+	}
 
-    initAuth()
-    
+	// Carga de la secret key
+	initAuth()
+
+	// Conexión a bd
 	database := db.ConnectNeon()
+
+	// Construcción de servicios
 	accidenteService := services.NewAccidenteService(database)
 	hospitalService := services.NewHospitalService(database)
 	pacienteService := services.NewPacienteService(database)
@@ -57,8 +61,8 @@ func main() {
 			"http://localhost:8080",
 			"https://ambulancia-ya.vercel.app",
 		},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
-		AllowHeaders:     []string{
+		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
+		AllowHeaders: []string{
 			"Origin",
 			"Content-Type",
 			"Accept",
@@ -71,7 +75,8 @@ func main() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
-	
+
+	// Setup de grupos de rutas
 	routes.SetupAccidenteRoutes(router, accidenteService)
 	routes.SetupHospitalRoutes(router, hospitalService)
 	routes.SetupPacienteRoutes(router, pacienteService)
@@ -81,9 +86,9 @@ func main() {
 	routes.SetupAmbulanciaRoutes(router, ambulanciaService)
 
 	port := os.Getenv("PORT")
-    if port == "" {
-        port = "8080"
-    }
+	if port == "" {
+		port = "8080"
+	}
 
-    router.Run("0.0.0.0:" + port)
+	router.Run("0.0.0.0:" + port)
 }
