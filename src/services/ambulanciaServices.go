@@ -2,6 +2,7 @@ package services
 
 import (
 	"time"
+	"fmt"
 
 	"github.com/mateopolci/AmbulanciaYa/src/models"
 	"gorm.io/gorm"
@@ -87,12 +88,18 @@ func (s *AmbulanciaService) GetAmbulanciaById(id string) (models.AmbulanciaDTO, 
 // Obtener el id de la primera ambulancia disponible
 func (s *AmbulanciaService) GetAmbulanciaDisp(descripcion string, telefono string) (models.AmbulanciaDTO, error) {
 
+	//Debug
+	fmt.Println("Telefono del paciente que llega a GetAmbulanciaDisp(): ", telefono)
+
 	var ambulancia models.Ambulancia
 
 	// Validación de ambulancia para  "Veloway"
 	if descripcion == "Veloway" {
 
 		datos := GetDatosVeloway(telefono)
+
+		//Debug
+		fmt.Println("Ficha medica que llega a GetAmbulanciaDisp() por Veloway: ", datos)
 
 		query := s.db
 
@@ -101,6 +108,8 @@ func (s *AmbulanciaService) GetAmbulanciaDisp(descripcion string, telefono strin
 
 		if datos.EnfermedadCardiaca != nil || datos.EnfermedadRespiratoria != nil || datos.Alergias != nil {
 			query = query.Where("inventario = ?", true)
+			//Debug
+			fmt.Println("Pasa la validacion de que al menos un string es != nil")
 		}
 
 		result := query.First(&ambulancia)
@@ -109,6 +118,9 @@ func (s *AmbulanciaService) GetAmbulanciaDisp(descripcion string, telefono strin
 		}
 		return ambulancia.AmbulanciaToDTO(), nil
 	}
+	
+		//Debug
+		fmt.Println("Directamente ni entra a la validacion de descripcion=Veloway")
 
 	// Validación de ambulancia para "Los Pinos"
 	if descripcion == "Los Pinos" {
@@ -201,6 +213,9 @@ func (s *AmbulanciaService) PedidoAmbulancia(pedido models.AmbulanciaPedidoDTO) 
 	var ambulanciaDisp models.AmbulanciaDTO
 	var err error
 	maxIntentos := 7
+
+	//Debug
+	fmt.Println("Pedido que llega a PedidoAmbulancia(): ", pedido)
 
 	for intento := 0; intento < maxIntentos; intento++ {
 		ambulanciaDisp, err = s.GetAmbulanciaDisp(pedido.Descripcion, pedido.Telefono)

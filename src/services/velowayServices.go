@@ -46,5 +46,8 @@ func GetDatosVeloway(telefono string) models.DatosVeloway {
 		return models.DatosVeloway{}
 	}
 
+    //Debug
+    fmt.Println("Este es el JSON que responde Veloway en velowayServices", data)
+    
 	return data
 }
