@@ -5,25 +5,18 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"github.com/joho/godotenv"
 
 	"github.com/mateopolci/AmbulanciaYa/src/models"
 )
 
 func GetDatosVeloway(telefono string) models.DatosVeloway {
-    err := godotenv.Load()
-	if err != nil {
-        //Debug
-        fmt.Println("Error cargando archivo .env con godotenv.Load()")
-		return models.DatosVeloway{}
-	}
 
     velowayApiUrl := os.Getenv("VELOWAY_API_URL") + "/" + telefono
 	apiKey := os.Getenv("API_KEY")
     
 	if velowayApiUrl == "" || apiKey == "" {
         //Debug
-        fmt.Println("Alguna de las variables de entorno es string vacio")
+        fmt.Println("Alguna de las variables de entorno se esta recuperando como string vacio")
 		return models.DatosVeloway{}
 	}
 
