@@ -15,14 +15,12 @@ func GetDatosVeloway(telefono string) models.DatosVeloway {
 	apiKey := os.Getenv("API_KEY")
     
 	if velowayApiUrl == "" || apiKey == "" {
-        //Debug
         fmt.Println("Alguna de las variables de entorno se esta recuperando como string vacio")
 		return models.DatosVeloway{}
 	}
 
 	req, err := http.NewRequest("GET", velowayApiUrl, nil)
 	if err != nil {
-        //Debug
         fmt.Println("Error desesctructurando la request")
 		return models.DatosVeloway{}
 	}
@@ -32,27 +30,21 @@ func GetDatosVeloway(telefono string) models.DatosVeloway {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-        //Debug
         fmt.Println("Error en el client.Do(req)")
         return models.DatosVeloway{}
 	}
 	defer resp.Body.Close()
     
 	if resp.StatusCode != http.StatusOK {
-        //Debug
         fmt.Println("La api no devuelve 200")
 		return models.DatosVeloway{}
 	}
     
 	var data models.DatosVeloway
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
-        //Debug
         fmt.Println("Error decodificando el JSON de veloway")
 		return models.DatosVeloway{}
 	}
-
-    //Debug
-    fmt.Println("Este es el JSON que responde Veloway en velowayServices", data)
     
 	return data
 }
