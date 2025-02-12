@@ -10,16 +10,15 @@ import (
 )
 
 func ConnectNeon() *gorm.DB {
-    // Intentar cargar .env en desarrollo
+    // Intentar cargar .env en local
     _ = godotenv.Load()
 
-    // Obtener la URL de conexión
+    // Obtener la URL de la conexión en produccion
     connStr := os.Getenv("DATABASE_URL")
     if connStr == "" {
         log.Fatal("DATABASE_URL no está configurada")
     }
 
-    // Configuración para desarrollo y producción
     config := postgres.Config{
         DSN: connStr,
         PreferSimpleProtocol: true,

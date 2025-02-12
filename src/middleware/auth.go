@@ -9,18 +9,19 @@ import (
 
 var secretKey string
 
-// Establece la clave secreta desde el .env, inicializado en main
+// Establecer la secret key en main
 func SetSecretKey (key string) {
 	secretKey = key
 }
 
+// Funcion para obtener la secret key en el login
 func GetSecretKey() string {
     return secretKey
 }
 
 func AuthMiddleware() gin.HandlerFunc {
     return func(ctx *gin.Context) {
-        // Get token from cookie instead of header
+        // Obtener el token de la cookie
         tokenString, err := ctx.Cookie("jwt")
         if err != nil {
             ctx.JSON(http.StatusUnauthorized, gin.H{"error": "No authentication cookie found"})
@@ -28,20 +29,20 @@ func AuthMiddleware() gin.HandlerFunc {
             return
         }
 
-        // Verify and decode JWT token
+        // Verificar token y obtener claims
         claims := jwt.MapClaims{}
         token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
             return []byte(secretKey), nil
         })
 
-        // Validate token
+        // Validar token
         if err != nil || !token.Valid {
             ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
             ctx.Abort()
             return
         }
 
-        // Check token expiration
+        // Verificar la expiracion del token
         if exp, ok := claims["exp"].(float64); ok {
             if time.Now().Unix() > int64(exp) {
                 ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Token expired"})
@@ -50,7 +51,7 @@ func AuthMiddleware() gin.HandlerFunc {
             }
         }
 
-        // Set claims in context
+        // Establecer claims en el contexto de Gin
         ctx.Set("paramedicoId", claims["id"])
         ctx.Set("isAdmin", claims["isAdmin"])
         ctx.Next()

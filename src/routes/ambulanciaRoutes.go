@@ -13,7 +13,7 @@ func SetupAmbulanciaRoutes(router *gin.Engine, service *services.AmbulanciaServi
     // Ruta publica 
     ambulancia := router.Group("/ambulancias")
     {
-        ambulancia.POST("/solicitar", ambulanciaController.SolicitarAmbulancia) //ESTA ES LA RUTA DE ENTRADA PARA PEDIR UNA AMBULANCIA
+        ambulancia.POST("/solicitar", ambulanciaController.SolicitarAmbulancia) //Ruta de entrada para el pedido de una ambulancia
     }
 
     // Rutas protegidas para paramedico
