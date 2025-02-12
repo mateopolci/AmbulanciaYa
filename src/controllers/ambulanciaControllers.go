@@ -46,7 +46,8 @@ func (c *AmbulanciaController) GetAmbulancia(ctx *gin.Context) {
 
 func (c *AmbulanciaController) GetAmbulanciaDisponible(ctx *gin.Context) {
 	var descripcion string
-    ambulanciaDTO, err := c.service.GetAmbulanciaDisp(descripcion)
+	var telefono string
+    ambulanciaDTO, err := c.service.GetAmbulanciaDisp(descripcion, telefono)
     if err != nil {
         ctx.JSON(http.StatusNotFound, gin.H{"error": "No hay ambulancias disponibles"})
         return

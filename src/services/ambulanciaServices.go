@@ -85,14 +85,14 @@ func (s *AmbulanciaService) GetAmbulanciaById(id string) (models.AmbulanciaDTO, 
 }
 
 // Obtener el id de la primera ambulancia disponible
-func (s *AmbulanciaService) GetAmbulanciaDisp(descripcion string) (models.AmbulanciaDTO, error) {
+func (s *AmbulanciaService) GetAmbulanciaDisp(descripcion string, telefono string) (models.AmbulanciaDTO, error) {
 
 	var ambulancia models.Ambulancia
 
 	// Validación de ambulancia para  "Veloway"
 	if descripcion == "Veloway" {
 
-		datos := GetDatosVeloway()
+		datos := GetDatosVeloway(telefono)
 
 		query := s.db
 
@@ -203,7 +203,7 @@ func (s *AmbulanciaService) PedidoAmbulancia(pedido models.AmbulanciaPedidoDTO) 
 	maxIntentos := 7
 
 	for intento := 0; intento < maxIntentos; intento++ {
-		ambulanciaDisp, err = s.GetAmbulanciaDisp(pedido.Descripcion)
+		ambulanciaDisp, err = s.GetAmbulanciaDisp(pedido.Descripcion, pedido.Telefono)
 		if err == nil && ambulanciaDisp.Id != "" {
 			break
 		}
