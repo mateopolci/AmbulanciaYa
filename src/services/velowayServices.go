@@ -22,7 +22,7 @@ func GetDatosVeloway(telefono string) models.DatosVeloway {
 	req, err := http.NewRequest("GET", velowayApiUrl, nil)
 	if err != nil {
         fmt.Println("Error desesctructurando la request")
-		return models.DatosVeloway{}
+		return models.DatosVeloway{}	
 	}
     
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", apiKey))
@@ -30,7 +30,7 @@ func GetDatosVeloway(telefono string) models.DatosVeloway {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-        fmt.Println("Error en el client.Do(req)")
+        fmt.Println("Error en la request a la api de veloway")
         return models.DatosVeloway{}
 	}
 	defer resp.Body.Close()

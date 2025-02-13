@@ -8,21 +8,21 @@ import (
 )
 
 type AmbulanciaService struct {
-	db               *gorm.DB
+	db               *gorm.DB 
 	pacienteService  *PacienteService
 	accidenteService *AccidenteService
 }
 
-// Constructor del servicio
+// Crea AmbulanciaServices con los servicios necesarios
 func NewAmbulanciaService(db *gorm.DB, pacienteService *PacienteService, accidenteService *AccidenteService) *AmbulanciaService {
-	return &AmbulanciaService{
+	return &AmbulanciaService{  
 		db:               db,
 		pacienteService:  pacienteService,
 		accidenteService: accidenteService,
 	}
 }
 
-// Obtener todas las ambulancias
+// Obtener todas las ambulancias 
 func (s *AmbulanciaService) GetAllAmbulancias() ([]models.AmbulanciaDTO, error) {
 	var ambulancias []models.Ambulancia
 	result := s.db.Find(&ambulancias)
@@ -220,10 +220,10 @@ func (s *AmbulanciaService) PedidoAmbulancia(pedido models.AmbulanciaPedidoDTO) 
 	// Inicializar pacienteId
 	var pacienteId *string
 
-	// Solo procesar paciente si se proporcionan nombre y teléfono
 	if pedido.Nombre != "" && pedido.Telefono != "" {
 		paciente, err := s.pacienteService.GetByTelefono(pedido.Telefono)
 		if err != nil || paciente.Id == "" {
+			// Crear paciente si no existe
 			nuevoPaciente, err := s.pacienteService.Create(models.PacienteDTO{
 				NombreCompleto: pedido.Nombre,
 				Telefono:       pedido.Telefono,

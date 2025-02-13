@@ -113,47 +113,38 @@ func (s *AccidenteService) CreateAccidente(accidenteDTO models.AccidenteDTO) (mo
 
 // Crear un nuevo accidente y enviar la ambulancia
 func (s *AccidenteService) CreateAccidenteAndSendAmbulancia(accidenteDTO models.AccidenteDTO) (models.Accidente, error) {
-	tx := s.db.Begin()
+    // Actualizar el estado de Base de la ambulancia a false
+    if err := s.db.Model(&models.Ambulancia{}).
+        Where("id = ?", accidenteDTO.AmbulanciaId).
+        Update("base", false).Error; err != nil {
+        return models.Accidente{}, err
+    }
 
-	// Actualizar el estado de Base de la ambulancia a false
-	if err := tx.Model(&models.Ambulancia{}).
-		Where("id = ?", accidenteDTO.AmbulanciaId).
-		Update("base", false).Error; err != nil {
-		tx.Rollback()
-		return models.Accidente{}, err
-	}
+    // Crear el nuevo accidente
+    accidente := models.Accidente{
+        Direccion:    accidenteDTO.Direccion,
+        Descripcion:  accidenteDTO.Descripcion,
+        Fecha:        accidenteDTO.Fecha,
+        Hora:         accidenteDTO.Hora,
+        AmbulanciaId: accidenteDTO.AmbulanciaId,
+        HospitalId:   accidenteDTO.HospitalId,
+        PacienteId:   accidenteDTO.PacienteId,
+    }
+    if err := s.db.Create(&accidente).Error; err != nil {
+        return models.Accidente{}, err
+    }
 
-	// Crear el nuevo accidente
-	accidente := models.Accidente{
-		Direccion:    accidenteDTO.Direccion,
-		Descripcion:  accidenteDTO.Descripcion,
-		Fecha:        accidenteDTO.Fecha,
-		Hora:         accidenteDTO.Hora,
-		AmbulanciaId: accidenteDTO.AmbulanciaId,
-		HospitalId:   accidenteDTO.HospitalId,
-		PacienteId:   accidenteDTO.PacienteId,
-	}
+    // Rutina que actualiza el estado de la ambulancia a true luego de 1 minuto
+    go func() {
+        time.Sleep(1 * time.Minute)
+        if err := s.db.Model(&models.Ambulancia{}).
+            Where("id = ?", accidenteDTO.AmbulanciaId).
+            Update("base", true).Error; err != nil {
+            log.Printf("Error updating ambulancia status: %v", err)
+        }
+    }()
 
-	if err := tx.Create(&accidente).Error; err != nil {
-		tx.Rollback()
-		return models.Accidente{}, err
-	}
-
-	if err := tx.Commit().Error; err != nil {
-		return models.Accidente{}, err
-	}
-
-	// Rutina que actualiza el estado de la ambulancia a true luego de 1 minuto
-	go func() {
-		time.Sleep(1 * time.Minute)
-		if err := s.db.Model(&models.Ambulancia{}).
-			Where("id = ?", accidenteDTO.AmbulanciaId).
-			Update("base", true).Error; err != nil {
-			log.Printf("Error updating ambulancia status: %v", err)
-		}
-	}()
-
-	return accidente, nil
+    return accidente, nil
 }
 
 // Actualizar un accidente existente
