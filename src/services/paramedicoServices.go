@@ -125,6 +125,7 @@ func (s *ParamedicoService) Login(email, password string) (*models.LoginResponse
 		return nil, errors.New("credenciales inválidas")
 	}
 
+	// Creacion del payload del token
 	claims := jwt.MapClaims{
 		"id":      paramedico.Id,
 		"email":   paramedico.Email,
@@ -132,8 +133,12 @@ func (s *ParamedicoService) Login(email, password string) (*models.LoginResponse
 		"exp":     time.Now().Add(time.Hour * 24).Unix(),
 	}
 
+	// Creacion del JWT con header, payload y signature
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	// Firma del token con la clave secreta
 	tokenString, err := token.SignedString([]byte(middleware.GetSecretKey()))
+
 	if err != nil {
 		return nil, err
 	}

@@ -100,13 +100,13 @@ func (c *ParamedicoController) Login(ctx *gin.Context) {
 
     ctx.SetSameSite(http.SameSiteNoneMode)
     ctx.SetCookie(
-        "jwt",           
-        response.Token,  
-        3600*24,        
-        "/",            
-        "ambulanciaya.onrender.com",
-        true,           
-        true,           
+        "jwt",                       // Nombre de la cookie      
+        response.Token,              // Valor de la cookie
+        3600*24,                     // Duración de la cookie
+        "/",                         // Path de la cookie
+        "ambulanciaya.onrender.com", // Dominio de la cookie
+        true,                        // Secure (SSL)
+        true,                        // HttpOnly
     )
 
 	ctx.JSON(http.StatusOK, gin.H{"isAdmin": response.IsAdmin})
