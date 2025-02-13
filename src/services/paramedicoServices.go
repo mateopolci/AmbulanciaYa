@@ -155,23 +155,24 @@ func (s *ParamedicoService) UpdateEmail(paramedicoId string, currentPassword str
 		return err
 	}
 
-	// Verify current password
+	// Verificamos la contraseña
 	if err := bcrypt.CompareHashAndPassword([]byte(paramedico.Password), []byte(currentPassword)); err != nil {
 		return errors.New("contraseña actual incorrecta")
 	}
 
-	// Update email
+	// Actualizamos el email
 	result := s.db.Model(&paramedico).Update("email", newEmail)
 	return result.Error
 }
 
 func (s *ParamedicoService) UpdatePassword(paramedicoId string, currentPassword string, newPassword string) error {
-	// Primero verificar la contraseña actual
+	// Verificamos el id del paramedico
 	var paramedico models.Paramedico
 	if err := s.db.First(&paramedico, "id = ?", paramedicoId).Error; err != nil {
 		return err
 	}
 
+	// Verificamos la contraseña actual
 	if err := bcrypt.CompareHashAndPassword([]byte(paramedico.Password), []byte(currentPassword)); err != nil {
 		return errors.New("contraseña actual incorrecta")
 	}

@@ -14,7 +14,7 @@ func SetupParamedicoRoutes(router *gin.Engine, service *services.ParamedicoServi
     router.POST("/login", ParamedicoController.Login)
     router.POST("/logout", ParamedicoController.Logout)
 
-    // Rutas que requieren autenticación pero NO requieren ser admin
+    // Rutas que requieren autenticación pero no requieren ser admin
     paramedicoAuth := router.Group("/paramedicos/me")
     paramedicoAuth.Use(middleware.AuthMiddleware())
     {
